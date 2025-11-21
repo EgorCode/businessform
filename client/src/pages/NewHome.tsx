@@ -2,6 +2,7 @@ import { useState } from "react";
 import Header from "@/components/Header";
 import NewHero from "@/components/NewHero";
 import ArchetypeSelector from "@/components/ArchetypeSelector";
+import IdeaGenerator from "@/components/IdeaGenerator";
 import BloggerCaseStudy from "@/components/BloggerCaseStudy";
 import StressTestSimulator from "@/components/StressTestSimulator";
 import TaxCalculator from "@/components/TaxCalculator";
@@ -38,6 +39,7 @@ export default function NewHome() {
       <Header />
       <main>
         <NewHero />
+        <IdeaGenerator />
         <section id="case-study">
           <BloggerCaseStudy />
         </section>

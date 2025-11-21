@@ -1,0 +1,34 @@
+<section id="ideas" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">Ищете нишу в 2025?</h2>
+                    <p class="text-lg text-slate-600 mb-8">
+                        Рынок меняется. В 2025 году в тренде автоматизация, локальное производство и услуги для комфорта. Нажмите кнопку, чтобы получить случайную бизнес-идею, актуальную для России.
+                    </p>
+                    
+                    <div class="bg-slate-50 p-8 rounded-2xl border border-slate-200 shadow-inner relative overflow-hidden">
+                        <div id="idea-display" class="relative z-10">
+                            <span class="text-sm font-bold text-indigo-500 uppercase tracking-wider mb-2 block">Идея #1</span>
+                            <h3 class="text-2xl font-bold text-slate-800 mb-3">Умный дом "под ключ"</h3>
+                            <p class="text-slate-600">Установка и настройка систем автоматизации для квартир. Спрос на комфорт и энергосбережение растет на 20% ежегодно.</p>
+                        </div>
+                        <div class="absolute -bottom-10 -right-10 text-slate-100 opacity-50">
+                            <span class="material-symbols-outlined text-[150px]">emoji_objects</span>
+                        </div>
+                    </div>
+
+                    <button onclick="generateIdea()" class="mt-6 w-full sm:w-auto px-6 py-3 bg-slate-900 text-white rounded-lg font-semibold hover:bg-slate-800 transition flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined">refresh</span>
+                        Сгенерировать другую
+                    </button>
+                </div>
+                <div class="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl group">
+                     <img style="" src="blob:https://2r4h2evfuogz0lu5yriyt0oswr2750zvlih2l7guea11os1ied-h833788197.scf.usercontent.goog/a9bd0c4b-bf59-442f-9909-229c828903f1" go-data-src="/gen?prompt=lightbulb+moment+creative+concept+art+bright+colors+3d+render&amp;aspect=4:3" alt="Вдохновение" class="w-full h-full object-cover transition duration-700 group-hover:scale-105">
+                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
+                         <p class="text-white font-medium text-lg">"Лучший способ начать — перестать говорить и начать делать."</p>
+                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
