@@ -6,6 +6,10 @@ import IdeaGenerator from "@/components/IdeaGenerator";
 import BloggerCaseStudy from "@/components/BloggerCaseStudy";
 import StressTestSimulator from "@/components/StressTestSimulator";
 import TaxCalculator from "@/components/TaxCalculator";
+import WorkExperienceTracker from "@/components/WorkExperienceTracker";
+import SelfEmploymentRegistration from "@/components/SelfEmploymentRegistration";
+import SocialInsuranceGuide from "@/components/SocialInsuranceGuide";
+import PracticalFAQ from "@/components/PracticalFAQ";
 import DocumentLibrary from "@/components/DocumentLibrary";
 import KnowledgeBase from "@/components/KnowledgeBase";
 import Footer from "@/components/Footer";
@@ -45,6 +49,10 @@ export default function NewHome() {
         </section>
         <StressTestSimulator />
         <TaxCalculator />
+        <WorkExperienceTracker />
+        <SelfEmploymentRegistration />
+        <SocialInsuranceGuide />
+        <PracticalFAQ />
         <DocumentLibrary />
         <KnowledgeBase />
       </main>
