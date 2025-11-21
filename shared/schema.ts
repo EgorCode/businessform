@@ -16,3 +16,24 @@ export const insertUserSchema = createInsertSchema(users).pick({
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
+
+// Calculation schemas
+export const npdCalculationSchema = z.object({
+  monthlyIncome: z.number().min(0),
+});
+
+export const usnCalculationSchema = z.object({
+  yearlyIncome: z.number().min(0),
+  yearlyExpenses: z.number().min(0),
+});
+
+export const stressTestSchema = z.object({
+  monthlyRevenue: z.number().min(0),
+  monthlyExpenses: z.number().min(0),
+  employees: z.number().min(0),
+  partners: z.number().min(1),
+});
+
+export type NPDCalculation = z.infer<typeof npdCalculationSchema>;
+export type USNCalculation = z.infer<typeof usnCalculationSchema>;
+export type StressTest = z.infer<typeof stressTestSchema>;

@@ -19,93 +19,47 @@ export default function StressTestSimulator() {
   const [employees, setEmployees] = useState([0]);
   const [partners, setPartners] = useState([1]);
   const [expenses, setExpenses] = useState([200000]); // Monthly expenses
+  const [recommendation, setRecommendation] = useState<Recommendation>({
+    form: "ИП УСН 6%",
+    confidence: 90,
+    taxBurden: 30000,
+    reasons: ["Оптимальная ставка: УСН 6%", "Возможность найма сотрудников", "Простая регистрация и отчётность"],
+    warnings: [],
+  });
 
-  const getRecommendation = (): Recommendation => {
-    const monthlyRevenue = revenue[0];
-    const annualRevenue = monthlyRevenue * 12;
-    const employeeCount = employees[0];
-    const partnerCount = partners[0];
-    const monthlyExpenses = expenses[0];
-
-    // НПД logic
-    if (annualRevenue <= 2400000 && employeeCount === 0 && partnerCount === 1) {
-      const tax = monthlyRevenue * 0.04;
+  const getRecommendation = async (): Promise<Recommendation | null> => {
+    try {
+      const response = await fetch('/api/simulate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          monthlyRevenue: revenue[0],
+          monthlyExpenses: expenses[0],
+          employees: employees[0],
+          partners: partners[0],
+        }),
+      });
+      const data = await response.json();
+      const rec = data.recommendation;
+      
       return {
-        form: "НПД",
-        confidence: 95,
-        taxBurden: tax,
-        reasons: [
-          "Доход в пределах лимита 2.4М ₽/год",
-          "Работаете без сотрудников",
-          "Минимум отчётности",
-          "Самая низкая налоговая ставка (4-6%)",
-        ],
+        form: rec.form,
+        confidence: rec.confidence,
+        taxBurden: revenue[0] * 0.06, // Simplified for display
+        reasons: rec.reasons,
         warnings: [],
       };
+    } catch (error) {
+      console.error('Simulation error:', error);
+      return null;
     }
-
-    // Warnings for НПД limits
-    const npdWarnings: string[] = [];
-    if (annualRevenue > 2400000) {
-      npdWarnings.push("⚠️ Доход превышает лимит НПД (2.4М ₽/год)");
-    }
-    if (employeeCount > 0) {
-      npdWarnings.push("⚠️ НПД не позволяет нанимать сотрудников");
-    }
-
-    // ИП logic
-    if (annualRevenue <= 60000000 && partnerCount === 1) {
-      const profitMargin = ((monthlyRevenue - monthlyExpenses) / monthlyRevenue) * 100;
-      const tax6 = monthlyRevenue * 0.06;
-      const tax15 = Math.max((monthlyRevenue - monthlyExpenses) * 0.15, 0);
-      const optimalTax = Math.min(tax6, tax15);
-      const optimalRate = tax6 < tax15 ? "УСН 6%" : "УСН 15%";
-
-      return {
-        form: `ИП ${optimalRate}`,
-        confidence: 90,
-        taxBurden: optimalTax,
-        reasons: [
-          `Оптимальная ставка: ${optimalRate}`,
-          employeeCount > 0 ? `Можете нанять до ${employeeCount} сотрудников` : "Возможность найма сотрудников (до 130)",
-          "Простая регистрация и отчётность",
-          profitMargin > 60 ? "Высокая маржинальность подходит для УСН 6%" : "УСН 15% учитывает расходы",
-        ],
-        warnings: npdWarnings,
-      };
-    }
-
-    // ООО logic
-    const tax6 = monthlyRevenue * 0.06;
-    const tax15 = Math.max((monthlyRevenue - monthlyExpenses) * 0.15, 0);
-    const optimalTax = Math.min(tax6, tax15);
-    const optimalRate = tax6 < tax15 ? "УСН 6%" : "УСН 15%";
-
-    const reasons = [
-      `Рекомендуем ${optimalRate}`,
-      "Защита личных активов от бизнес-рисков",
-    ];
-
-    if (partnerCount > 1) {
-      reasons.push(`${partnerCount} учредителей — ООО упрощает управление`);
-    }
-    if (annualRevenue > 60000000) {
-      reasons.push("Доход превышает лимиты УСН для ИП");
-    }
-    if (employeeCount > 100) {
-      reasons.push("Большая команда требует корпоративной структуры");
-    }
-
-    return {
-      form: `ООО ${optimalRate}`,
-      confidence: 85,
-      taxBurden: optimalTax,
-      reasons,
-      warnings: [...npdWarnings, "⚠️ Более сложная регистрация и отчётность"],
-    };
   };
 
-  const recommendation = getRecommendation();
+  const updateRecommendation = async () => {
+    const result = await getRecommendation();
+    if (result) setRecommendation(result);
+  };
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('ru-RU', {
       style: 'currency',
@@ -161,7 +115,10 @@ export default function StressTestSimulator() {
                   max={5000000}
                   step={50000}
                   value={revenue}
-                  onValueChange={setRevenue}
+                  onValueChange={(val) => {
+                    setRevenue(val);
+                    updateRecommendation();
+                  }}
                   data-testid="slider-revenue"
                 />
                 <div className="flex justify-between text-xs text-muted-foreground">
@@ -205,7 +162,10 @@ export default function StressTestSimulator() {
                   max={50}
                   step={1}
                   value={employees}
-                  onValueChange={setEmployees}
+                  onValueChange={(val) => {
+                    setEmployees(val);
+                    updateRecommendation();
+                  }}
                   data-testid="slider-employees"
                 />
                 <div className="flex justify-between text-xs text-muted-foreground">

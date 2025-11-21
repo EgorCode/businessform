@@ -14,26 +14,41 @@ export default function TaxCalculator() {
   const [usnExpenses, setUsnExpenses] = useState("");
   const [usnResult, setUsnResult] = useState<{ tax6: number; tax15: number } | null>(null);
 
-  const calculateNPD = () => {
+  const calculateNPD = async () => {
     const income = parseFloat(npdIncome);
     if (!income) return;
     
-    // Simplified NPD calculation (4% for individuals, 6% for legal entities)
-    const tax = income * 0.04;
-    setNpdResult(tax);
-    console.log('NPD calculated:', { income, tax });
+    try {
+      const response = await fetch('/api/calculate/npd', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ monthlyIncome: income }),
+      });
+      const data = await response.json();
+      setNpdResult(data.monthlyTax);
+      console.log('NPD calculated:', data);
+    } catch (error) {
+      console.error('NPD calculation error:', error);
+    }
   };
 
-  const calculateUSN = () => {
+  const calculateUSN = async () => {
     const income = parseFloat(usnIncome);
     const expenses = parseFloat(usnExpenses) || 0;
     if (!income) return;
 
-    const tax6 = income * 0.06;
-    const tax15 = Math.max((income - expenses) * 0.15, 0);
-    
-    setUsnResult({ tax6, tax15 });
-    console.log('USN calculated:', { income, expenses, tax6, tax15 });
+    try {
+      const response = await fetch('/api/calculate/usn', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ yearlyIncome: income, yearlyExpenses: expenses }),
+      });
+      const data = await response.json();
+      setUsnResult({ tax6: data.usn6.monthlyTax, tax15: data.usn15.monthlyTax });
+      console.log('USN calculated:', data);
+    } catch (error) {
+      console.error('USN calculation error:', error);
+    }
   };
 
   const formatNumber = (num: number) => {

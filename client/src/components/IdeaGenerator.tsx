@@ -108,15 +108,34 @@ export default function IdeaGenerator() {
   const [currentIdea, setCurrentIdea] = useState(businessIdeas[0]);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const generateIdea = () => {
+  useEffect(() => {
+    // Load initial idea from API
+    const loadInitialIdea = async () => {
+      try {
+        const response = await fetch('/api/ideas/random');
+        const data = await response.json();
+        setCurrentIdea(data);
+      } catch (error) {
+        console.error('Error loading initial idea:', error);
+      }
+    };
+    loadInitialIdea();
+  }, []);
+
+  const generateIdea = async () => {
     setIsGenerating(true);
     console.log('Generating business idea...');
     
-    setTimeout(() => {
-      const randomIndex = Math.floor(Math.random() * businessIdeas.length);
-      setCurrentIdea(businessIdeas[randomIndex]);
+    try {
+      const response = await fetch('/api/ideas/random');
+      const data = await response.json();
+      setCurrentIdea(data);
+      console.log('Idea generated:', data);
+    } catch (error) {
+      console.error('Error generating idea:', error);
+    } finally {
       setIsGenerating(false);
-    }, 800);
+    }
   };
 
   const getFormBadgeColor = (form: string) => {
