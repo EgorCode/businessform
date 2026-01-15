@@ -50,6 +50,9 @@ fi
 echo -e "${GREEN}🔨 Собираю проект (npm run build)...${NC}"
 npm run build
 
+echo -e "${GREEN}🗄️ Обновляю базу данных (migrations)...${NC}"
+npm run db:push
+
 # 6. Запуск через PM2
 echo -e "${GREEN}🚀 Запускаю сервер через PM2...${NC}"
 
