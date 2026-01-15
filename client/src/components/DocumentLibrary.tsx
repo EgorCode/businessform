@@ -2,7 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Download, FileText, Search } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Download, FileText, Search, Eye, Plus } from "lucide-react";
 import { useState } from "react";
 
 // todo: remove mock functionality
@@ -10,16 +11,20 @@ const documents = [
   {
     id: 1,
     title: "Заявление на регистрацию ИП (Р21001)",
-    category: "Регистрация ИП",
+    category: "Регистрация",
     description: "Форма для подачи в налоговую службу при регистрации ИП",
     format: "PDF/DOCX",
+    type: "form",
+    instructions: "Заполните все поля в соответствии с вашими паспортными данными. Укажите коды ОКВЭД для вашей деятельности."
   },
   {
     id: 2,
     title: "Устав ООО (образец)",
-    category: "Регистрация ООО",
+    category: "Регистрация",
     description: "Типовой устав для регистрации общества с ограниченной ответственностью",
     format: "DOCX",
+    type: "template",
+    instructions: "Заполните реквизиты компании, ФИО учредителей, уставный капитал и виды деятельности."
   },
   {
     id: 3,
@@ -27,6 +32,8 @@ const documents = [
     category: "Договоры",
     description: "Универсальный шаблон договора между ИП/ООО и клиентом",
     format: "DOCX",
+    type: "template",
+    instructions: "Заполните реквизиты сторон, предмет договора, стоимость услуг и порядок оплаты."
   },
   {
     id: 4,
@@ -34,6 +41,8 @@ const documents = [
     category: "Кадры",
     description: "Унифицированная форма для оформления сотрудников",
     format: "DOCX",
+    type: "template",
+    instructions: "Укажите ФИО, должность, дату начала работы, оклад и условия испытательного срока."
   },
   {
     id: 5,
@@ -41,17 +50,39 @@ const documents = [
     category: "Договоры",
     description: "Документ для подтверждения оказания услуг или выполнения работ",
     format: "DOCX",
+    type: "template",
+    instructions: "Укажите дату, стороны, перечень выполненных работ и их стоимость."
   },
   {
     id: 6,
     title: "Решение единственного учредителя",
-    category: "Регистрация ООО",
+    category: "Регистрация",
     description: "Решение о создании ООО и утверждении устава",
     format: "DOCX",
+    type: "template",
+    instructions: "Укажите ФИО учредителя, данные компании, размер уставного капитала и директора."
   },
+  {
+    id: 7,
+    title: "Налоговая декларация ИП (УСН)",
+    category: "Налоги",
+    description: "Декларация по упрощенной системе налогообложения для ИП",
+    format: "PDF/Excel",
+    type: "form",
+    instructions: "Заполните разделы 1.1, 1.2 и 2. Укажите полученные доходы и уплаченные страховые взносы."
+  },
+  {
+    id: 8,
+    title: "Заявление на лицензию на алкоголь",
+    category: "Лицензии",
+    description: "Для розничной и оптовой продажи алкогольной продукции",
+    format: "DOCX",
+    type: "form",
+    instructions: "Заполните реквизиты организации, адреса магазинов, информацию о руководителе и кассирах."
+  }
 ];
 
-const categories = ["Все", "Регистрация ИП", "Регистрация ООО", "Договоры", "Кадры"];
+const categories = ["Все", "Регистрация", "Налоги", "Кадры", "Договоры", "Лицензии"];
 
 export default function DocumentLibrary() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -66,6 +97,12 @@ export default function DocumentLibrary() {
 
   const handleDownload = (docId: number, docTitle: string) => {
     console.log('Downloading document:', { docId, docTitle });
+    // Здесь будет логика скачивания документа
+  };
+
+  const handleCreate = (docId: number, docTitle: string) => {
+    console.log('Creating document:', { docId, docTitle });
+    // Здесь будет логика создания документа
   };
 
   return (
@@ -116,26 +153,60 @@ export default function DocumentLibrary() {
                 </div>
                 <CardTitle className="text-lg">{doc.title}</CardTitle>
                 <CardDescription>
-                  <Badge variant="secondary" className="mb-2">
-                    {doc.category}
-                  </Badge>
+                  <div className="flex gap-2 mb-2">
+                    <Badge variant="secondary">
+                      {doc.category}
+                    </Badge>
+                    <Badge variant="outline">
+                      {doc.type === 'form' ? 'Форма' : 'Шаблон'}
+                    </Badge>
+                  </div>
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">{doc.description}</p>
+                <p className="text-sm text-muted-foreground mb-3">{doc.description}</p>
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline">{doc.format}</Badge>
+                </div>
               </CardContent>
-              <CardFooter className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">{doc.format}</span>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="gap-2"
-                  onClick={() => handleDownload(doc.id, doc.title)}
-                  data-testid={`button-download-${doc.id}`}
-                >
-                  <Download className="h-4 w-4" />
-                  Скачать
-                </Button>
+              <CardFooter className="flex gap-2">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <Eye className="h-4 w-4" />
+                      Предпросмотр
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                      <DialogTitle>{doc.title}</DialogTitle>
+                      <DialogDescription>{doc.description}</DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="font-medium mb-2">Инструкции по заполнению:</h4>
+                        <p className="text-sm text-muted-foreground">{doc.instructions}</p>
+                      </div>
+                      <div className="bg-muted/50 p-4 rounded-md">
+                        <p className="text-sm text-center text-muted-foreground">
+                          Здесь будет отображаться предпросмотр документа
+                        </p>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+                
+                {doc.type === 'form' ? (
+                  <Button size="sm" className="gap-2" onClick={() => handleDownload(doc.id, doc.title)}>
+                    <Download className="h-4 w-4" />
+                    Скачать
+                  </Button>
+                ) : (
+                  <Button size="sm" className="gap-2" onClick={() => handleCreate(doc.id, doc.title)}>
+                    <Plus className="h-4 w-4" />
+                    Создать
+                  </Button>
+                )}
               </CardFooter>
             </Card>
           ))}

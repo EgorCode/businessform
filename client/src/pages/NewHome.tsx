@@ -3,17 +3,16 @@ import Header from "@/components/Header";
 import NewHero from "@/components/NewHero";
 import ArchetypeSelector from "@/components/ArchetypeSelector";
 import IdeaGenerator from "@/components/IdeaGenerator";
-import BloggerCaseStudy from "@/components/BloggerCaseStudy";
-import StressTestSimulator from "@/components/StressTestSimulator";
-import TaxCalculator from "@/components/TaxCalculator";
+import { TestimonialsSplit } from "@/components/ui/split-testimonial";
 import WorkExperienceTracker from "@/components/WorkExperienceTracker";
 import SelfEmploymentRegistration from "@/components/SelfEmploymentRegistration";
 import SocialInsuranceGuide from "@/components/SocialInsuranceGuide";
-import PracticalFAQ from "@/components/PracticalFAQ";
-import DocumentLibrary from "@/components/DocumentLibrary";
-import KnowledgeBase from "@/components/KnowledgeBase";
+
+
+import NewsFeed from "@/components/NewsFeed";
+import FeaturedArticles from "@/components/FeaturedArticles";
 import Footer from "@/components/Footer";
-import AIAdvisorChat from "@/components/AIAdvisorChat";
+import EnhancedAIAssistant from "@/components/EnhancedAIAssistant";
 
 export default function NewHome() {
   const [showArchetypeSelector, setShowArchetypeSelector] = useState(false);
@@ -26,7 +25,7 @@ export default function NewHome() {
     console.log('Selected archetype:', archetypeId);
     // Scroll to next section after selection
     setTimeout(() => {
-      document.getElementById('case-study')?.scrollIntoView({ behavior: 'smooth' });
+      document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth' });
     }, 300);
   };
 
@@ -43,24 +42,25 @@ export default function NewHome() {
       <Header />
       <main>
         <NewHero />
+        <NewsFeed />
+        <FeaturedArticles />
         <IdeaGenerator />
-        <section id="case-study">
-          <BloggerCaseStudy />
+        <section id="testimonials">
+          <TestimonialsSplit />
         </section>
-        <StressTestSimulator />
-        <TaxCalculator />
+
         <WorkExperienceTracker />
         <SelfEmploymentRegistration />
         <SocialInsuranceGuide />
-        <PracticalFAQ />
-        <DocumentLibrary />
-        <KnowledgeBase />
+
+
       </main>
       <Footer />
-      <AIAdvisorChat 
+      <EnhancedAIAssistant
         isMinimized={isChatMinimized}
         onToggle={() => setIsChatMinimized(!isChatMinimized)}
       />
-    </div>
+    </div >
   );
 }
+

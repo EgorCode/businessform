@@ -12,13 +12,19 @@ import { useState } from "react";
 
 interface FAQScenario {
   id: string;
-  category: "limits" | "zero-income" | "transition" | "hiring" | "taxes" | "documents";
+  category: "limits" | "zero-income" | "transition" | "hiring" | "taxes" | "documents" | "dictionary";
   question: string;
   situation: string;
   solution: string;
   tips?: string[];
   icon: any;
 }
+// ... (keep default export line if not captured, but we are inside component? No, interface is outside)
+// Actually I need to be careful with context.
+// Let's replace the interface definition and the categories array inside the component.
+
+// I will target the interface definition first.
+
 
 export default function PracticalFAQ() {
   const scenarios: FAQScenario[] = [
@@ -145,12 +151,12 @@ export default function PracticalFAQ() {
 
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
-  const filteredScenarios = selectedCategory === "all" 
-    ? scenarios 
+  const filteredScenarios = selectedCategory === "all"
+    ? scenarios
     : scenarios.filter(s => s.category === selectedCategory);
 
   return (
-    <section className="bg-gradient-to-br from-background via-purple-500/5 to-background py-20">
+    <section className="bg-background py-20">
       <div className="mx-auto max-w-7xl px-4">
         <div className="mb-12 text-center">
           <Badge variant="outline" className="mb-4 bg-purple-500/10">
@@ -190,8 +196,8 @@ export default function PracticalFAQ() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <AlertTriangle className="h-5 w-5 text-amber-500" />
-              {selectedCategory === "all" 
-                ? `${scenarios.length} типичных ситуаций` 
+              {selectedCategory === "all"
+                ? `${scenarios.length} типичных ситуаций`
                 : `${filteredScenarios.length} сценариев`
               }
             </CardTitle>
@@ -231,7 +237,7 @@ export default function PracticalFAQ() {
                           <div className="space-y-2 text-sm" data-testid={`solution-${scenario.id}`}>
                             {scenario.solution.split('\n\n').map((paragraph, idx) => {
                               if (!paragraph.trim()) return null;
-                              
+
                               const lines = paragraph.split('\n');
                               return (
                                 <div key={idx} className="space-y-1">
@@ -249,7 +255,7 @@ export default function PracticalFAQ() {
                                       const parts = line.split('**');
                                       return (
                                         <p key={lineIdx} className="text-muted-foreground">
-                                          {parts.map((part, partIdx) => 
+                                          {parts.map((part, partIdx) =>
                                             partIdx % 2 === 1 ? (
                                               <span key={partIdx} className="font-semibold text-foreground">{part}</span>
                                             ) : part
@@ -305,7 +311,7 @@ export default function PracticalFAQ() {
             <div className="flex-1">
               <h3 className="mb-2 text-xl font-semibold">Не нашли ответ на свой вопрос?</h3>
               <p className="text-muted-foreground">
-                Проконсультируйтесь с бухгалтером или налоговым консультантом. 
+                Проконсультируйтесь с бухгалтером или налоговым консультантом.
                 Первичная консультация обычно бесплатна.
               </p>
             </div>

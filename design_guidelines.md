@@ -57,7 +57,7 @@
   - Smooth transitions using Framer Motion
   - Contextual to timeline position
 
-### 3. AI FormaGPT Copilot
+### 3. AI ИИ-помощник Copilot
 **Floating Chat Interface**:
 - Minimized: Pulsing orb in bottom-right with notification badge
 - Expanded: Chat panel with document upload, multimodal responses
@@ -142,7 +142,7 @@
 
 ## AI Features Specification
 
-### FormaGPT Copilot Functions
+### ИИ-помощник Copilot Functions
 1. **Document Analysis**
    - Upload: Bank statements, contracts, invoices
    - Extract: Income, expenses, business patterns
@@ -170,7 +170,7 @@
 **Phase 1: Immersive Onboarding**
 1. 3D carousel archetype selection
 2. Short animated intro of chosen path
-3. AI greeting: "Привет! Я FormaGPT, ваш гид..."
+3. AI greeting: "Привет! Я ИИ-помощник, ваш гид..."
 
 **Phase 2: Growth Journey Exploration**
 1. Timeline auto-populated based on archetype

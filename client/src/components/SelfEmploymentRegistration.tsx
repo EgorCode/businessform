@@ -66,7 +66,7 @@ export default function SelfEmploymentRegistration() {
     {
       name: "Сбербанк",
       icon: Building2,
-      appLink: "https://www.sberbank.ru/ru/person/dist_services/selfemployed",
+      appLink: "https://www.sberbank.com/ru/svoedelo/start",
       features: [
         "Интеграция с СберБизнес",
         "Автоматические чеки при переводах",
@@ -78,7 +78,7 @@ export default function SelfEmploymentRegistration() {
     {
       name: "Тинькофф",
       icon: Wallet,
-      appLink: "https://www.tinkoff.ru/business/self-employed/",
+      appLink: "https://www.tbank.ru/cards/debit-cards/tinkoff-black/selfemployed",
       features: [
         "Кэшбэк до 30% у партнёров",
         "Бесплатная бизнес-карта",
@@ -90,7 +90,7 @@ export default function SelfEmploymentRegistration() {
     {
       name: "Альфа-Банк",
       icon: CreditCard,
-      appLink: "https://alfabank.ru/sme/self-employed/",
+      appLink: "https://alfabank.ru/selfemployed/",
       features: [
         "Процент на остаток до 7%",
         "Интеграция с 1C",
@@ -142,7 +142,7 @@ export default function SelfEmploymentRegistration() {
   ];
 
   return (
-    <section className="border-b bg-gradient-to-br from-background via-green-500/5 to-background py-20">
+    <section className="border-b py-20">
       <div className="mx-auto max-w-7xl px-4">
         <div className="mb-12 text-center">
           <Badge variant="outline" className="mb-4 bg-green-500/10">
@@ -276,21 +276,7 @@ export default function SelfEmploymentRegistration() {
         </div>
 
         {/* Призыв к действию */}
-        <Card className="mt-8 border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
-          <CardContent className="flex flex-col items-center gap-4 py-8 text-center">
-            <CheckCircle2 className="h-12 w-12 text-primary" />
-            <div>
-              <h3 className="mb-2 text-2xl font-semibold">Готовы начать?</h3>
-              <p className="text-muted-foreground">
-                Регистрация занимает 10 минут. Уже завтра сможете легально принимать платежи.
-              </p>
-            </div>
-            <Button size="lg" className="gap-2" data-testid="button-start-registration">
-              Выбрать банк и зарегистрироваться
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </CardContent>
-        </Card>
+
       </div>
     </section>
   );

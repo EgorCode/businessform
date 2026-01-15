@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { TrendingUp, Users, Building2, Download, Sparkles, AlertCircle } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useAIAssistant } from "@/contexts/AIAssistantContext";
 
 const acts = [
   {
@@ -63,22 +64,23 @@ const acts = [
 ];
 
 export default function BloggerCaseStudy() {
+  const { toggleMinimized } = useAIAssistant();
   return (
     <section className="border-b py-20">
       <div className="mx-auto max-w-7xl px-4">
         <div className="mb-12">
-          <div className="flex items-start gap-6 mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-start gap-6 mb-8">
             <Avatar className="h-20 w-20">
               <AvatarFallback className="text-2xl bg-gradient-to-br from-purple-500 to-pink-500 text-white">
                 ЛК
               </AvatarFallback>
             </Avatar>
             <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-2">
                 <h2 className="text-3xl font-bold" data-testid="text-case-study-title">
                   Путь блогера Лены
                 </h2>
-                <Badge variant="outline" className="gap-1">
+                <Badge variant="outline" className="gap-1 w-fit">
                   <Sparkles className="h-3 w-3" />
                   Реальный кейс
                 </Badge>
@@ -87,7 +89,7 @@ export default function BloggerCaseStudy() {
                 Как lifestyle-блогер прошла путь от НПД до ООО с командой из 8 человек
               </p>
             </div>
-            <Button variant="outline" className="gap-2" data-testid="button-compare-path">
+            <Button variant="outline" className="gap-2 w-full sm:w-fit" data-testid="button-compare-path">
               Сравнить с моим путём
             </Button>
           </div>
@@ -232,7 +234,10 @@ export default function BloggerCaseStudy() {
               <p className="text-sm text-muted-foreground mb-4">
                 Хотите получить персональный план развития как у Лены?
               </p>
-              <Button className="gap-2" data-testid="button-start-journey">
+              <Button className="gap-2" data-testid="button-start-journey" onClick={() => {
+                // Открываем ИИ-помощника
+                toggleMinimized();
+              }}>
                 <Sparkles className="h-4 w-4" />
                 Начать свой путь с AI
               </Button>

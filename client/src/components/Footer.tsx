@@ -9,31 +9,31 @@ export default function Footer() {
             <h3 className="mb-4 text-lg font-semibold">Продукт</h3>
             <ul className="space-y-3">
               <li>
-                <Link href="#wizard">
-                  <a className="text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-wizard">
-                    Мастер выбора
-                  </a>
+                <Link href="/wizard">
+                  <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer" data-testid="link-footer-wizard">
+                    Мастер подбора бизнеса
+                  </span>
                 </Link>
               </li>
               <li>
-                <Link href="#comparison">
-                  <a className="text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-comparison">
-                    Сравнение форм
-                  </a>
+                <Link href="/comparison">
+                  <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer" data-testid="link-footer-comparison">
+                    Сравнение ИП/ООО/Самозанятость
+                  </span>
                 </Link>
               </li>
               <li>
-                <Link href="#calculators">
-                  <a className="text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-calculators">
+                <Link href="/calculators">
+                  <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer" data-testid="link-footer-calculators">
                     Калькуляторы
-                  </a>
+                  </span>
                 </Link>
               </li>
               <li>
-                <Link href="#documents">
-                  <a className="text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-documents">
+                <Link href="/documents">
+                  <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer" data-testid="link-footer-documents">
                     Документы
-                  </a>
+                  </span>
                 </Link>
               </li>
             </ul>
@@ -43,10 +43,17 @@ export default function Footer() {
             <h3 className="mb-4 text-lg font-semibold">Ресурсы</h3>
             <ul className="space-y-3">
               <li>
-                <Link href="#knowledge">
-                  <a className="text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-knowledge">
+                <Link href="/news">
+                  <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer" data-testid="link-footer-news">
+                    Новости
+                  </span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/knowledge">
+                  <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer" data-testid="link-footer-knowledge">
                     База знаний
-                  </a>
+                  </span>
                 </Link>
               </li>
               <li>
@@ -55,9 +62,11 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-faq">
-                  FAQ
-                </a>
+                <Link href="/faq">
+                  <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer" data-testid="link-footer-faq">
+                    FAQ
+                  </span>
+                </Link>
               </li>
               <li>
                 <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-support">
@@ -71,9 +80,11 @@ export default function Footer() {
             <h3 className="mb-4 text-lg font-semibold">Компания</h3>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-about">
-                  О нас
-                </a>
+                <Link href="/about">
+                  <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer" data-testid="link-footer-about">
+                    О нас
+                  </span>
+                </Link>
               </li>
               <li>
                 <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-contacts">
@@ -96,11 +107,15 @@ export default function Footer() {
           <div>
             <h3 className="mb-4 text-lg font-semibold">Актуальность</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Вся информация на платформе актуализирована в соответствии с законодательством РФ на 2024 год
+              Вся информация на платформе актуализирована в соответствии с законодательством РФ на 2026 год.
+              ИИ-помощник может допускать ошибки. Проверяйте важную информацию.
+            </p>
+            <p className="text-sm text-muted-foreground mb-4">
+              ИИ-помощник может допускать ошибки. Проверяйте важную информацию.
             </p>
             <div className="flex items-center gap-2">
               <div className="flex h-2 w-2 rounded-full bg-green-500"></div>
-              <span className="text-xs text-muted-foreground">Обновлено: Ноябрь 2024</span>
+              <span className="text-xs text-muted-foreground">Обновлено: Ноябрь 2026</span>
             </div>
           </div>
         </div>
@@ -108,17 +123,14 @@ export default function Footer() {
         <div className="mt-12 border-t pt-8">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <p className="text-sm text-muted-foreground" data-testid="text-copyright">
-              © 2024 БизнесФорма. Все права защищены.
+              © 2026 БизнесФорма. Все права защищены.
             </p>
             <div className="flex gap-6">
-              <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-telegram">
+              <a href="https://t.me/bizgide" className="text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-telegram">
                 Telegram
               </a>
               <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-vk">
                 VK
-              </a>
-              <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-youtube">
-                YouTube
               </a>
             </div>
           </div>

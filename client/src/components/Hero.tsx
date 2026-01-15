@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle } from "lucide-react";
+import { useLocation } from "wouter";
 import heroImage from "@assets/generated_images/Business_wizard_dashboard_mockup_bb572ce7.png";
 
 export default function Hero() {
+  const [, setLocation] = useLocation();
   return (
     <section className="relative overflow-hidden border-b bg-gradient-to-b from-background to-muted/20 py-20 lg:py-32">
       <div className="mx-auto max-w-7xl px-4">
@@ -18,11 +20,11 @@ export default function Hero() {
             </div>
 
             <div className="flex flex-col gap-4 sm:flex-row">
-              <Button size="lg" className="gap-2" data-testid="button-start-wizard">
+              <Button size="lg" className="gap-2" data-testid="button-start-wizard" onClick={() => setLocation('/wizard')}>
                 Начать опрос
                 <ArrowRight className="h-4 w-4" />
               </Button>
-              <Button size="lg" variant="outline" data-testid="button-compare">
+              <Button size="lg" variant="outline" data-testid="button-compare" onClick={() => setLocation('/comparison')}>
                 Сравнить формы
               </Button>
             </div>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест плавающей кнопки ИИ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .section {
+            margin-bottom: 100px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+        
+        /* Стили для плавающей кнопки */
+        .floating-ai-button {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 50;
+            display: flex;
+            height: 56px;
+            width: 56px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: linear-gradient(to right, #3b82f6, #9333ea);
+            color: white;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 24px;
+        }
+        
+        .floating-ai-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        
+        .floating-ai-button .pulse-indicator {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #10b981;
+            border: 2px solid white;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        
+        .hidden {
+            opacity: 0;
+            transform: translateY(100px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        
+        .visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>Тест плавающей кнопки ИИ</h1>
+        <p>Прокрутите страницу вниз и вверх, чтобы увидеть эффект появления/исчезновения кнопки.</p>
+        
+        <div class="section">
+            <h2>Раздел 1</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        </div>
+        
+        <div class="section">
+            <h2>Раздел 2</h2>
+            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        </div>
+        
+        <div class="section">
+            <h2>Раздел 3</h2>
+            <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+        </div>
+        
+        <div class="section">
+            <h2>Раздел 4</h2>
+            <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        </div>
+        
+        <div class="section">
+            <h2>Раздел 5</h2>
+            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</p>
+        </div>
+    </div>
+    
+    <!-- Плавающая кнопка ИИ -->
+    <button class="floating-ai-button visible" id="aiButton" onclick="alert('Кнопка ИИ нажата!')">
+        ✨
+        <div class="pulse-indicator"></div>
+    </button>
+    
+    <script>
+        let lastScrollY = 0;
+        let scrollThreshold = 100;
+        const aiButton = document.getElementById('aiButton');
+        
+        function handleScroll() {
+            const currentScrollY = window.scrollY;
+            
+            if (currentScrollY > lastScrollY && currentScrollY > scrollThreshold) {
+                // Прокрутка вниз - скрываем кнопку
+                aiButton.classList.remove('visible');
+                aiButton.classList.add('hidden');
+            } else {
+                // Прокрутка вверх или в верхней части страницы - показываем кнопку
+                aiButton.classList.remove('hidden');
+                aiButton.classList.add('visible');
+            }
+            
+            lastScrollY = currentScrollY;
+        }
+        
+        // Добавляем обработчик прокрутки с throttle
+        let timeoutId;
+        function throttledHandleScroll() {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+            timeoutId = setTimeout(handleScroll, 100);
+        }
+        
+        window.addEventListener('scroll', throttledHandleScroll, { passive: true });
+    </script>
+</body>
+</html>

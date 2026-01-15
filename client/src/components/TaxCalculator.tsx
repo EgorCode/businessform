@@ -9,7 +9,7 @@ import { useState } from "react";
 export default function TaxCalculator() {
   const [npdIncome, setNpdIncome] = useState("");
   const [npdResult, setNpdResult] = useState<number | null>(null);
-  
+
   const [usnIncome, setUsnIncome] = useState("");
   const [usnExpenses, setUsnExpenses] = useState("");
   const [usnResult, setUsnResult] = useState<{ tax6: number; tax15: number } | null>(null);
@@ -17,7 +17,7 @@ export default function TaxCalculator() {
   const calculateNPD = async () => {
     const income = parseFloat(npdIncome);
     if (!income) return;
-    
+
     try {
       const response = await fetch('/api/calculate/npd', {
         method: 'POST',
@@ -85,6 +85,10 @@ export default function TaxCalculator() {
                   <CardTitle>Калькулятор НПД</CardTitle>
                   <CardDescription>
                     Рассчитайте налог для самозанятых (4% при работе с физлицами, 6% с юрлицами)
+                    <br />
+                    <span className="text-sm text-amber-600 font-medium">
+                      Важно: с 2026 года изменены лимиты и правила перехода с УСН на НПД
+                    </span>
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -116,6 +120,11 @@ export default function TaxCalculator() {
                       <div className="text-sm text-muted-foreground">
                         Доход после налога: {formatNumber(parseFloat(npdIncome) - npdResult)}
                       </div>
+                      <div className="mt-4 p-3 bg-blue-50 rounded-md border border-blue-200">
+                        <p className="text-sm text-blue-800">
+                          <strong>Новое с 2026 года:</strong> упрощенный переход с УСН на НПД через мобильное приложение «Мой налог» с 1 июля 2026 года
+                        </p>
+                      </div>
                     </div>
                   )}
                 </CardContent>
@@ -128,6 +137,10 @@ export default function TaxCalculator() {
                   <CardTitle>Калькулятор УСН</CardTitle>
                   <CardDescription>
                     Сравните налог по ставке 6% (доходы) и 15% (доходы минус расходы)
+                    <br />
+                    <span className="text-sm text-amber-600 font-medium">
+                      Важно: с 2026 года введен НДС для УСН с доходом свыше 60 млн рублей
+                    </span>
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -160,43 +173,54 @@ export default function TaxCalculator() {
                   </Button>
 
                   {usnResult !== null && (
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div className="space-y-4 rounded-lg border bg-muted/50 p-6">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-muted-foreground">УСН 6%</span>
-                          <Badge variant="outline">Доходы</Badge>
+                    <div className="space-y-4">
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div className="space-y-4 rounded-lg border bg-muted/50 p-6">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-muted-foreground">УСН 6%</span>
+                            <Badge variant="outline">Доходы</Badge>
+                          </div>
+                          <div className="text-2xl font-mono font-semibold" data-testid="text-usn-6-result">
+                            {formatNumber(usnResult.tax6)}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            6% от дохода
+                          </div>
                         </div>
-                        <div className="text-2xl font-mono font-semibold" data-testid="text-usn-6-result">
-                          {formatNumber(usnResult.tax6)}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          6% от дохода
-                        </div>
-                      </div>
 
-                      <div className="space-y-4 rounded-lg border bg-muted/50 p-6">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-muted-foreground">УСН 15%</span>
-                          <Badge variant="outline">Доходы - Расходы</Badge>
-                        </div>
-                        <div className="text-2xl font-mono font-semibold" data-testid="text-usn-15-result">
-                          {formatNumber(usnResult.tax15)}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          15% от прибыли
+                        <div className="space-y-4 rounded-lg border bg-muted/50 p-6">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-muted-foreground">УСН 15%</span>
+                            <Badge variant="outline">Доходы - Расходы</Badge>
+                          </div>
+                          <div className="text-2xl font-mono font-semibold" data-testid="text-usn-15-result">
+                            {formatNumber(usnResult.tax15)}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            15% от прибыли
+                          </div>
                         </div>
                       </div>
 
                       <div className="col-span-full rounded-lg bg-primary/10 p-4 text-center">
                         <p className="text-sm font-medium">
-                          {usnResult.tax6 < usnResult.tax15 
-                            ? "УСН 6% выгоднее в вашем случае" 
+                          {usnResult.tax6 < usnResult.tax15
+                            ? "УСН 6% выгоднее в вашем случае"
                             : "УСН 15% выгоднее в вашем случае"}
                         </p>
                         <p className="mt-1 text-xs text-muted-foreground">
                           Экономия: {formatNumber(Math.abs(usnResult.tax6 - usnResult.tax15))}
                         </p>
                       </div>
+                    </div>
+                  )}
+
+                  {/* НДС для УСН с доходом свыше 60 млн */}
+                  {parseFloat(usnIncome) > 60000000 && (
+                    <div className="mt-4 p-3 bg-amber-50 rounded-md border border-amber-200">
+                      <p className="text-sm text-amber-800">
+                        <strong>Важно с 2026 года:</strong> при годовом доходе свыше 60 млн рублей УСН обязаны уплачивать НДС по пониженным ставкам (5% и 7%)
+                      </p>
                     </div>
                   )}
                 </CardContent>

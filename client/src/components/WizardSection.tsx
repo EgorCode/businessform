@@ -7,7 +7,7 @@ export default function WizardSection() {
 
   if (!showWizard) {
     return (
-      <section id="wizard" className="border-b py-20">
+      <section id="wizard" className="py-10">
         <div className="mx-auto max-w-7xl px-4">
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="mb-4 text-3xl font-semibold tracking-tight lg:text-4xl" data-testid="text-wizard-section-title">
@@ -26,10 +26,8 @@ export default function WizardSection() {
   }
 
   return (
-    <section id="wizard" className="border-b py-20">
-      <div className="mx-auto max-w-7xl px-4">
-        <BusinessWizard />
-      </div>
-    </section>
+    <div id="wizard" className="w-full">
+      <BusinessWizard />
+    </div>
   );
 }

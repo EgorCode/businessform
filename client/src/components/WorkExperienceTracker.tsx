@@ -1,9 +1,10 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
-import { GraduationCap, Calendar, TrendingUp, Shield, CheckCircle2, AlertCircle } from "lucide-react";
+import { GraduationCap, Calendar, TrendingUp, Shield, ShieldCheck, CreditCard, CheckCircle2, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,16 +25,16 @@ export default function WorkExperienceTracker() {
   const calculateExperience = () => {
     const npd = parseInt(monthsAsNPD) || 0;
     const ip = parseInt(monthsAsIP) || 0;
-    
+
     // НПД не дает стаж автоматически
     const npdExperience = voluntaryContributions ? npd : 0;
     // ИП на УСН дает стаж автоматически при уплате взносов
     const ipExperience = ip;
-    
+
     const totalMonths = npdExperience + ipExperience;
     const years = Math.floor(totalMonths / 12);
     const months = totalMonths % 12;
-    
+
     return { years, months, totalMonths };
   };
 
@@ -43,7 +44,7 @@ export default function WorkExperienceTracker() {
 
   const exampleTimeline: TimelineEvent[] = [
     { year: 2024, status: "student", label: "Студент 3 курса", pensionContribution: false },
-    { year: 2025, status: "npd", label: "НПД + учеба", pensionContribution: false },
+    { year: 2026, status: "npd", label: "НПД + учеба", pensionContribution: false },
     { year: 2026, status: "npd", label: "НПД с взносами", pensionContribution: true },
     { year: 2027, status: "ip", label: "ИП УСН 6%", pensionContribution: true },
     { year: 2028, status: "ooo", label: "ООО + сотрудники", pensionContribution: true },
@@ -60,7 +61,7 @@ export default function WorkExperienceTracker() {
   };
 
   return (
-    <section className="border-b bg-gradient-to-br from-background via-accent/5 to-background py-20">
+    <section className="border-b py-20">
       <div className="mx-auto max-w-7xl px-4">
         <div className="mb-12 text-center">
           <Badge variant="outline" className="mb-4">
@@ -205,6 +206,107 @@ export default function WorkExperienceTracker() {
                         <li>✗ Больничные (нужен отдельный взнос в ФСС)</li>
                       </ul>
                     </div>
+
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" className="w-full gap-2 border-blue-200 bg-blue-50/50 text-blue-700 hover:bg-blue-100 hover:text-blue-800 dark:border-blue-900/30 dark:bg-blue-900/20 dark:text-blue-300">
+                          <ShieldCheck className="h-4 w-4" />
+                          Новые больничные 2026
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto sm:max-w-[900px]">
+                        <DialogHeader>
+                          <DialogTitle className="flex items-center gap-2 text-2xl font-bold">
+                            <ShieldCheck className="h-6 w-6 text-blue-600" />
+                            Страхование на случай болезни (2026)
+                          </DialogTitle>
+                          <DialogDescription>
+                            Добровольная программа государственного страхования для плательщиков НПД
+                          </DialogDescription>
+                        </DialogHeader>
+
+                        <div className="space-y-6 py-4">
+                          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 p-6 text-white shadow-lg md:p-8">
+                            <div className="relative z-10 max-w-xl">
+                              <h3 className="mb-2 text-2xl font-bold">Больничные для самозанятых</h3>
+                              <p className="text-blue-100 opacity-90">
+                                С 1 января 2026 года вы можете официально получать выплаты по болезни.
+                                Достаточно выбрать тариф и полгода платить взносы.
+                              </p>
+                            </div>
+                            <ShieldCheck className="absolute -bottom-8 -right-8 h-48 w-48 rotate-12 text-white/10" />
+                          </div>
+
+                          <div className="grid gap-6 md:grid-cols-2">
+                            <div className="group flex flex-col rounded-2xl border bg-card p-6 shadow-sm transition-all hover:shadow-md">
+                              <div className="mb-4 flex items-center gap-4">
+                                <div className="rounded-xl bg-orange-50 p-3 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400">
+                                  <CreditCard className="h-6 w-6" />
+                                </div>
+                                <h4 className="text-xl font-bold">Тариф «Базовый»</h4>
+                              </div>
+                              <div className="mb-6 flex-1 space-y-3">
+                                <div className="flex justify-between border-b pb-2">
+                                  <span className="text-sm text-muted-foreground">Взнос</span>
+                                  <span className="font-semibold">1 344 ₽/мес</span>
+                                </div>
+                                <div className="flex justify-between border-b pb-2">
+                                  <span className="text-sm text-muted-foreground">Выплата</span>
+                                  <span className="font-semibold">до 35 000 ₽/мес</span>
+                                </div>
+                                <div className="flex justify-between border-b pb-2">
+                                  <span className="text-sm text-muted-foreground">Стаж для выплат</span>
+                                  <span className="font-semibold">от 6 мес</span>
+                                </div>
+                              </div>
+                              <Button variant="outline" className="w-full border-2 border-foreground/10 hover:bg-accent">
+                                Выбрать базовый
+                              </Button>
+                            </div>
+
+                            <div className="group flex flex-col rounded-2xl border border-blue-200 bg-blue-50/10 p-6 shadow-sm transition-all hover:shadow-md dark:border-blue-900/30">
+                              <div className="mb-4 flex items-center gap-4">
+                                <div className="rounded-xl bg-blue-100 p-3 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400">
+                                  <TrendingUp className="h-6 w-6" />
+                                </div>
+                                <h4 className="text-xl font-bold">Тариф «Максимум»</h4>
+                              </div>
+                              <div className="mb-6 flex-1 space-y-3">
+                                <div className="flex justify-between border-b border-blue-100 pb-2 dark:border-blue-900/30">
+                                  <span className="text-sm text-muted-foreground">Взнос</span>
+                                  <span className="font-semibold">1 920 ₽/мес</span>
+                                </div>
+                                <div className="flex justify-between border-b border-blue-100 pb-2 dark:border-blue-900/30">
+                                  <span className="text-sm text-muted-foreground">Выплата</span>
+                                  <span className="font-semibold">до 50 000 ₽/мес</span>
+                                </div>
+                                <div className="flex justify-between border-b border-blue-100 pb-2 dark:border-blue-900/30">
+                                  <span className="text-sm text-muted-foreground">Стаж для выплат</span>
+                                  <span className="font-semibold">от 6 мес</span>
+                                </div>
+                              </div>
+                              <Button className="w-full bg-blue-600 text-white shadow-lg shadow-blue-500/20 hover:bg-blue-700">
+                                Выбрать максимум
+                              </Button>
+                            </div>
+                          </div>
+
+                          <div className="flex gap-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-900 dark:border-amber-900/30 dark:bg-amber-900/10 dark:text-amber-200">
+                            <AlertCircle className="h-6 w-6 flex-shrink-0 text-amber-600 dark:text-amber-400" />
+                            <div className="text-sm">
+                              <p className="mb-1 font-bold">Важно знать</p>
+                              <p className="opacity-90">
+                                Размер пособия зависит от общего страхового стажа:
+                                <strong> до 5 лет — 60%</strong>,
+                                <strong> 5-8 лет — 80%</strong>,
+                                <strong> свыше 8 лет — 100% </strong>
+                                от среднего заработка.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
                   </div>
                 </TabsContent>
 
@@ -274,13 +376,12 @@ export default function WorkExperienceTracker() {
             <div className="relative">
               {/* Timeline line */}
               <div className="absolute left-8 top-0 h-full w-0.5 bg-border" />
-              
+
               <div className="space-y-6">
                 {exampleTimeline.map((event, idx) => (
                   <div key={idx} className="relative flex items-start gap-4">
-                    <div className={`relative z-10 flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full border-4 border-background ${
-                      event.pensionContribution ? "bg-green-500" : "bg-muted"
-                    }`}>
+                    <div className={`relative z-10 flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full border-4 border-background ${event.pensionContribution ? "bg-green-500" : "bg-muted"
+                      }`}>
                       <span className="text-sm font-bold text-white">
                         {event.year}
                       </span>
@@ -313,8 +414,8 @@ export default function WorkExperienceTracker() {
             <div className="mt-8 rounded-lg border bg-accent/10 p-4">
               <p className="text-sm font-medium">💡 Совет для студентов:</p>
               <p className="mt-1 text-sm text-muted-foreground">
-                Если планируете работать на себя долго — начните платить добровольные взносы уже с НПД. 
-                Каждый год стажа приближает к пенсии и увеличивает её размер. В 2024 году минимум 45 842 ₽ 
+                Если планируете работать на себя долго — начните платить добровольные взносы уже с НПД.
+                Каждый год стажа приближает к пенсии и увеличивает её размер. В 2024 году минимум 45 842 ₽
                 даёт полный год стажа.
               </p>
             </div>

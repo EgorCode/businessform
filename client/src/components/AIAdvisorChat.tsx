@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sparkles, Send, Upload, X, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useScrollDetection } from '@/hooks/useScrollDetection';
 
 interface Message {
   id: string;
@@ -18,7 +19,7 @@ const initialMessages: Message[] = [
   {
     id: "1",
     role: "assistant",
-    content: "Привет! Я FormaGPT — ваш AI-помощник в выборе формы бизнеса. Расскажите о вашем проекте или загрузите документы (договоры, выписки), и я помогу подобрать оптимальную структуру.",
+    content: "Привет! Я ИИ-помощник в выборе формы бизнеса. Расскажите о вашем проекте или загрузите документы (договоры, выписки), и я помогу подобрать оптимальную структуру.",
     timestamp: new Date(),
   },
 ];
@@ -32,6 +33,20 @@ export default function AIAdvisorChat({ isMinimized = false, onToggle }: AIAdvis
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [input, setInput] = useState("");
   const [isThinking, setIsThinking] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { isScrolling, elementRef, scrollToBottom } = useScrollDetection();
+
+  // Alternative scroll to bottom using messagesEndRef
+  const scrollToBottomWithRef = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Auto-scroll when messages change
+  useEffect(() => {
+    // Use both methods for better compatibility
+    scrollToBottom();
+    scrollToBottomWithRef();
+  }, [messages, scrollToBottom]);
 
   const handleSend = () => {
     if (!input.trim()) return;
@@ -94,7 +109,7 @@ export default function AIAdvisorChat({ isMinimized = false, onToggle }: AIAdvis
             <Sparkles className="h-5 w-5 text-white" />
           </div>
           <div>
-            <CardTitle className="text-lg">FormaGPT</CardTitle>
+            <CardTitle className="text-lg">ИИ-помощник</CardTitle>
             <CardDescription className="text-xs">AI-помощник по выбору формы</CardDescription>
           </div>
         </div>
@@ -116,7 +131,19 @@ export default function AIAdvisorChat({ isMinimized = false, onToggle }: AIAdvis
       </CardHeader>
 
       <CardContent className="space-y-4 p-4">
-        <ScrollArea className="h-[400px] pr-4" data-testid="scroll-messages">
+        <ScrollArea
+          ref={(node) => {
+            if (node) {
+              // Get the scrollable viewport element inside ScrollArea
+              const viewport = node.querySelector('[data-radix-scroll-area-viewport]');
+              if (viewport) {
+                (elementRef as any).current = viewport;
+              }
+            }
+          }}
+          className={`h-[400px] pr-4 ai-chat-scrollbar scrolling-indicator ${isScrolling ? 'scrolling' : ''}`}
+          data-testid="scroll-messages"
+        >
           <div className="space-y-4">
             {messages.map((message) => (
               <div
@@ -154,11 +181,13 @@ export default function AIAdvisorChat({ isMinimized = false, onToggle }: AIAdvis
                 <div className="max-w-[85%] rounded-lg bg-muted p-3">
                   <div className="flex items-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                    <span className="text-sm text-muted-foreground">FormaGPT думает...</span>
+                    <span className="text-sm text-muted-foreground">ИИ-помощник думает...</span>
                   </div>
                 </div>
               </div>
             )}
+            {/* Invisible element for scrollIntoView reference */}
+            <div ref={messagesEndRef} />
           </div>
         </ScrollArea>
 

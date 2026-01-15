@@ -1,104 +1,236 @@
-import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "wouter";
+import { useAIAssistant } from "@/contexts/AIAssistantContext";
+import { Sparkles } from "lucide-react";
+import { SearchModal } from "@/components/search";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
+  const { toggleMinimized } = useAIAssistant();
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
 
   return (
-    <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="mx-auto max-w-7xl px-4">
-        <div className="flex h-16 items-center justify-between">
+    <>
+      {/* Основной контейнер Header */}
+      <div className="pt-6 px-4 flex justify-center sticky top-0 z-50">
+        <header className="glass-panel rounded-full px-2 py-2 flex justify-between items-center w-full max-w-7xl shadow-glass hover:shadow-glass-hover transition-all duration-500 transform hover:-translate-y-1">
+
+          {/* Logo */}
           <Link href="/">
-            <a className="flex items-center gap-2 text-xl font-bold" data-testid="link-home">
-              <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary text-primary-foreground">
-                <span className="text-lg font-bold">БФ</span>
+            <div className="flex items-center gap-3 px-4 group cursor-pointer" data-testid="link-home">
+              {/* Иконка логотипа */}
+              <div className="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/30 group-hover:scale-105 transition-transform duration-300">
+                <span className="text-sm font-bold">БФ</span>
               </div>
-              <span>БизнесФорма</span>
-            </a>
+              {/* Текст логотипа */}
+              <span className="font-heading font-bold text-slate-800 tracking-tight text-lg hidden sm:block">БизнесФорма</span>
+              <span className="font-heading font-bold text-slate-800 tracking-tight text-lg sm:hidden">БФ</span>
+            </div>
           </Link>
 
-          <nav className="hidden items-center gap-8 md:flex">
-            <Link href="#wizard">
-              <a className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors" data-testid="link-wizard">
-                Мастер выбора
-              </a>
+          {/* Navigation (Desktop) */}
+          <nav className="hidden lg:flex items-center gap-1 bg-white/50 rounded-full px-1 py-1 border border-white/60">
+            <Link href="/start">
+              <span className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-green-600 hover:bg-green-50 rounded-full transition-all duration-300 cursor-pointer" data-testid="link-start">
+                Начнём?
+              </span>
             </Link>
-            <Link href="#comparison">
-              <a className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors" data-testid="link-comparison">
-                Сравнение форм
-              </a>
+            <Link href="/case-studies">
+              <span className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-green-600 hover:bg-green-50 rounded-full transition-all duration-300 cursor-pointer" data-testid="link-case-studies">
+                Кейсы
+              </span>
             </Link>
-            <Link href="#calculators">
-              <a className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors" data-testid="link-calculators">
+            <Link href="/calculators">
+              <span className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-blue-600 hover:bg-white rounded-full transition-all duration-300 cursor-pointer" data-testid="link-calculators">
                 Калькуляторы
-              </a>
+              </span>
             </Link>
-            <Link href="#documents">
-              <a className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors" data-testid="link-documents">
-                Документы
-              </a>
+            <Link href="/news">
+              <span className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-blue-600 hover:bg-white rounded-full transition-all duration-300 cursor-pointer" data-testid="link-news">
+                Новости
+              </span>
             </Link>
-            <Link href="#knowledge">
-              <a className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors" data-testid="link-knowledge">
+            <Link href="/knowledge">
+              <span className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-blue-600 hover:bg-white rounded-full transition-all duration-300 cursor-pointer" data-testid="link-knowledge">
                 База знаний
-              </a>
+              </span>
+            </Link>
+            <Link href="/documents">
+              <span className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-blue-600 hover:bg-white rounded-full transition-all duration-300 cursor-pointer" data-testid="link-documents">
+                Документы
+              </span>
             </Link>
           </nav>
 
-          <div className="hidden items-center gap-4 md:flex">
-            <Button data-testid="button-start">
-              Начать
-            </Button>
+          {/* Actions Right */}
+          <div className="flex items-center gap-2 pl-2 pr-1">
+            {/* Поиск */}
+            <button
+              onClick={() => setSearchModalOpen(true)}
+              className="hidden md:flex items-center justify-center w-10 h-10 rounded-full bg-white/50 hover:bg-white text-slate-600 transition-colors duration-300 group"
+              title="Поиск"
+              aria-label="Открыть поиск по сайту"
+            >
+              <svg className="w-4 h-4 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
+
+            {/* Кнопка вызова ИИ-помощника */}
+            <button
+              onClick={toggleMinimized}
+              className="shine-effect bg-slate-900 text-white px-5 py-2 rounded-full text-sm font-bold shadow-lg hover:shadow-xl hover:bg-black transition-all flex items-center gap-2 relative animate-pulse"
+              data-testid="button-ai-assistant"
+              aria-label="Открыть ИИ-помощника"
+            >
+              <Sparkles className="h-4 w-4" />
+              <span>ИИ-помощник</span>
+            </button>
+
+            {/* Mobile Menu Button (Burger) */}
+            <button
+              className="lg:hidden w-10 h-10 rounded-full bg-white/50 flex items-center justify-center text-slate-700 hover:bg-white transition-colors ml-1"
+              onClick={toggleMobileMenu}
+              data-testid="button-mobile-menu"
+            >
+              {mobileMenuOpen ? (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
           </div>
 
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            data-testid="button-mobile-menu"
-          >
-            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </Button>
-        </div>
-
-        {mobileMenuOpen && (
-          <div className="border-t py-4 md:hidden">
-            <nav className="flex flex-col gap-4">
-              <Link href="#wizard">
-                <a className="text-sm font-medium" data-testid="link-mobile-wizard">
-                  Мастер выбора
-                </a>
-              </Link>
-              <Link href="#comparison">
-                <a className="text-sm font-medium" data-testid="link-mobile-comparison">
-                  Сравнение форм
-                </a>
-              </Link>
-              <Link href="#calculators">
-                <a className="text-sm font-medium" data-testid="link-mobile-calculators">
-                  Калькуляторы
-                </a>
-              </Link>
-              <Link href="#documents">
-                <a className="text-sm font-medium" data-testid="link-mobile-documents">
-                  Документы
-                </a>
-              </Link>
-              <Link href="#knowledge">
-                <a className="text-sm font-medium" data-testid="link-mobile-knowledge">
-                  База знаний
-                </a>
-              </Link>
-              <Button className="w-full" data-testid="button-mobile-start">
-                Начать
-              </Button>
-            </nav>
-          </div>
-        )}
+        </header>
       </div>
-    </header>
+
+      {/* Mobile Menu Dropdown (Hidden by default) */}
+      {mobileMenuOpen && (
+        <div className="fixed top-24 left-4 right-4 z-40 lg:hidden">
+          <div className="glass-panel rounded-2xl p-4 shadow-2xl flex flex-col gap-2 animate-fadeIn">
+            <Link href="/start">
+              <div
+                className="p-3 rounded-xl hover:bg-green-50 text-slate-700 hover:text-green-600 font-medium flex justify-between items-center cursor-pointer"
+                onClick={() => setMobileMenuOpen(false)}
+                data-testid="link-mobile-start"
+              >
+                Начнём?
+                <svg className="w-4 h-4 text-slate-400 group-hover:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </Link>
+            <Link href="/case-studies">
+              <div
+                className="p-3 rounded-xl hover:bg-green-50 text-slate-700 hover:text-green-600 font-medium flex justify-between items-center cursor-pointer"
+                onClick={() => setMobileMenuOpen(false)}
+                data-testid="link-mobile-case-studies"
+              >
+                Кейсы самозанятых
+                <svg className="w-4 h-4 text-slate-400 group-hover:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </Link>
+            <Link href="/calculators">
+              <div
+                className="p-3 rounded-xl hover:bg-white/60 font-medium text-slate-700 flex justify-between items-center cursor-pointer"
+                onClick={() => setMobileMenuOpen(false)}
+                data-testid="link-mobile-calculators"
+              >
+                Калькуляторы
+                <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </Link>
+            <Link href="/news">
+              <div
+                className="p-3 rounded-xl hover:bg-white/60 font-medium text-slate-700 flex justify-between items-center cursor-pointer"
+                onClick={() => setMobileMenuOpen(false)}
+                data-testid="link-mobile-news"
+              >
+                Новости
+                <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </Link>
+            <Link href="/knowledge">
+              <div
+                className="p-3 rounded-xl hover:bg-white/60 font-medium text-slate-700 flex justify-between items-center cursor-pointer"
+                onClick={() => setMobileMenuOpen(false)}
+                data-testid="link-mobile-knowledge"
+              >
+                База знаний
+                <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </Link>
+            <Link href="/documents">
+              <div
+                className="p-3 rounded-xl hover:bg-white/60 font-medium text-slate-700 flex justify-between items-center cursor-pointer"
+                onClick={() => setMobileMenuOpen(false)}
+                data-testid="link-mobile-documents"
+              >
+                Документы
+                <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </Link>
+            <button
+              className="p-3 rounded-xl hover:bg-white/60 font-medium text-slate-700 flex justify-between items-center w-full text-left"
+              onClick={() => {
+                toggleMinimized();
+                setMobileMenuOpen(false);
+              }}
+              data-testid="button-mobile-ai-assistant"
+            >
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4" />
+                ИИ-помощник
+              </div>
+              <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+            <button
+              className="p-3 rounded-xl hover:bg-white/60 font-medium text-slate-700 flex justify-between items-center w-full text-left"
+              onClick={() => {
+                setSearchModalOpen(true);
+                setMobileMenuOpen(false);
+              }}
+              data-testid="button-mobile-search"
+            >
+              <div className="flex items-center gap-2">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                Поиск по сайту
+              </div>
+              <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Модальное окно поиска */}
+      <SearchModal
+        isOpen={searchModalOpen}
+        onClose={() => setSearchModalOpen(false)}
+      />
+    </>
   );
 }

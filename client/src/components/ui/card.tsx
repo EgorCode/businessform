@@ -60,7 +60,17 @@ const CardContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
+  <div
+    ref={ref}
+    className={cn("p-6 pt-0", className)}
+    style={{
+      // Убедимся, что CardContent правильно управляет высотой
+      height: 'inherit',
+      minHeight: 'inherit',
+      overflow: 'hidden'
+    }}
+    {...props}
+  />
 ))
 CardContent.displayName = "CardContent"
 

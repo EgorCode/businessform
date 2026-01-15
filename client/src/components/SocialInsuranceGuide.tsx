@@ -19,24 +19,24 @@ interface InsuranceOption {
 export default function SocialInsuranceGuide() {
   const [monthlyIncome, setMonthlyIncome] = useState("80000");
   const [pensionYears, setPensionYears] = useState("5");
-  
+
   const calculateVoluntaryContributions = () => {
     const income = parseFloat(monthlyIncome) || 0;
     const annualIncome = income * 12;
-    
+
     // Фиксированные взносы 2024
     const fixedPensionSFR = 36723;
     const fixedMedicalFFOMS = 9119;
     const total = fixedPensionSFR + fixedMedicalFFOMS;
-    
+
     // Дополнительный 1% с дохода свыше 300к
-    const additional1Percent = annualIncome > 300000 
-      ? (annualIncome - 300000) * 0.01 
+    const additional1Percent = annualIncome > 300000
+      ? (annualIncome - 300000) * 0.01
       : 0;
-    
+
     // ФСС для больничных (добровольно)
     const voluntaryFSS = 5652; // ~471 в месяц
-    
+
     return {
       pensionFixed: fixedPensionSFR,
       medicalFixed: fixedMedicalFFOMS,
@@ -52,13 +52,13 @@ export default function SocialInsuranceGuide() {
   const calculatePensionProjection = () => {
     const years = parseFloat(pensionYears) || 0;
     const contributions = calculateVoluntaryContributions();
-    
+
     // Упрощённый расчёт пенсионных баллов
     // 1 балл ≈ 134.69 ₽ в месяц в 2024
     const ballsPerYear = contributions.pensionFixed / 12000; // Примерно
     const totalBalls = ballsPerYear * years;
     const monthlyPensionBonus = totalBalls * 134.69;
-    
+
     return {
       years,
       totalBalls: Math.round(totalBalls * 10) / 10,
@@ -100,7 +100,7 @@ export default function SocialInsuranceGuide() {
   ];
 
   return (
-    <section className="border-b bg-gradient-to-br from-background via-blue-500/5 to-background py-20">
+    <section className="border-b py-20">
       <div className="mx-auto max-w-7xl px-4">
         <div className="mb-12 text-center">
           <Badge variant="outline" className="mb-4 bg-blue-500/10">
@@ -159,7 +159,7 @@ export default function SocialInsuranceGuide() {
 
                 <div className="space-y-4 rounded-lg border bg-accent/10 p-6">
                   <h3 className="font-semibold">Обязательные взносы в 2024:</h3>
-                  
+
                   <div className="space-y-3">
                     <div className="flex justify-between border-b pb-2">
                       <span className="text-sm">Пенсионное (СФР):</span>
@@ -197,7 +197,7 @@ export default function SocialInsuranceGuide() {
                     <Heart className="h-5 w-5 text-blue-600" />
                     <h3 className="font-semibold">Добровольное страхование (ФСС):</h3>
                   </div>
-                  
+
                   <div className="space-y-3">
                     <div className="flex justify-between">
                       <span className="text-sm">Больничные и декретные:</span>
@@ -286,7 +286,7 @@ export default function SocialInsuranceGuide() {
                     {pensionProjection.totalContributed.toLocaleString('ru-RU')} ₽
                   </p>
                   <p className="mt-2 text-xs text-muted-foreground">
-                    Расчёт приблизительный. Реальная пенсия зависит от многих факторов: 
+                    Расчёт приблизительный. Реальная пенсия зависит от многих факторов:
                     индексации, стоимости балла, общего стажа работы.
                   </p>
                 </div>
@@ -407,7 +407,7 @@ export default function SocialInsuranceGuide() {
                     <div>
                       <p className="font-medium">Начинайте с НПД</p>
                       <p className="text-muted-foreground">
-                        Пока доход нестабильный (&lt; 100К/мес) — работайте как НПД. 
+                        Пока доход нестабильный (&lt; 100К/мес) — работайте как НПД.
                         Платите только 4-6% налог без страховых взносов.
                       </p>
                     </div>
@@ -420,7 +420,7 @@ export default function SocialInsuranceGuide() {
                     <div>
                       <p className="font-medium">Платите добровольно в СФР</p>
                       <p className="text-muted-foreground">
-                        Если уверены в доходах — начните копить стаж. 
+                        Если уверены в доходах — начните копить стаж.
                         45 842 ₽/год = 1 год стажа. Можно платить частями.
                       </p>
                     </div>
@@ -433,7 +433,7 @@ export default function SocialInsuranceGuide() {
                     <div>
                       <p className="font-medium">Переходите на ИП при росте</p>
                       <p className="text-muted-foreground">
-                        Когда доход стабильно &gt; 200К/мес или нужны сотрудники — 
+                        Когда доход стабильно &gt; 200К/мес или нужны сотрудники —
                         открывайте ИП. Взносы станут обязательными, но УСН 6% выгоднее НПД.
                       </p>
                     </div>
@@ -446,7 +446,7 @@ export default function SocialInsuranceGuide() {
                     <div>
                       <p className="font-medium">Добавьте ФСС при необходимости</p>
                       <p className="text-muted-foreground">
-                        Планируете детей или часто болеете? Подключите добровольное 
+                        Планируете детей или часто болеете? Подключите добровольное
                         страхование ФСС (5 652 ₽/год) для больничных и декретных.
                       </p>
                     </div>
@@ -458,8 +458,8 @@ export default function SocialInsuranceGuide() {
                     Важно помнить
                   </p>
                   <p className="mt-2 text-sm">
-                    Без уплаты взносов в СФР у вас не будет трудового стажа. 
-                    Для получения страховой пенсии в России нужен минимум 15 лет стажа 
+                    Без уплаты взносов в СФР у вас не будет трудового стажа.
+                    Для получения страховой пенсии в России нужен минимум 15 лет стажа
                     и 30 пенсионных баллов. Каждый год работы без взносов — потерянный стаж.
                   </p>
                 </div>
