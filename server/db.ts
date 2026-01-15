@@ -1,5 +1,7 @@
+import Database from 'better-sqlite3';
+import { drizzle } from 'drizzle-orm/better-sqlite3';
+import * as schema from "@shared/schema";
 import path from "path";
-// ... imports ...
 
 // Use SQLite for local development
 const dbUrl = process.env.DATABASE_URL || 'sqlite:./local.db';
