@@ -83,7 +83,7 @@ export default function Header() {
             {/* Кнопка вызова ИИ-помощника */}
             <button
               onClick={toggleMinimized}
-              className="shine-effect bg-slate-900 text-white px-5 py-2 rounded-full text-sm font-bold shadow-lg hover:shadow-xl hover:bg-black transition-all flex items-center gap-2 relative animate-pulse"
+              className="shine-effect bg-slate-900 text-white px-5 rounded-full text-sm font-bold shadow-lg hover:shadow-xl hover:bg-black transition-all flex items-center justify-center gap-2 relative h-10"
               data-testid="button-ai-assistant"
               aria-label="Открыть ИИ-помощника"
             >
