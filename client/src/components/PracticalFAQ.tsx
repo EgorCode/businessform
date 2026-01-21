@@ -164,7 +164,7 @@ export default function PracticalFAQ() {
     if (error) return staticScenarios;
 
     if (strapiResponse?.data && strapiResponse.data.length > 0) {
-      return strapiResponse.data.map((item: FAQItem): FAQScenario => {
+      const strapiItems = strapiResponse.data.map((item: FAQItem): FAQScenario => {
         let tipsArray: string[] = [];
         if (Array.isArray(item.tips)) {
           tipsArray = item.tips;
@@ -173,16 +173,35 @@ export default function PracticalFAQ() {
           tipsArray = item.tips.split('\n').filter(t => t.trim().length > 0);
         }
 
+        // Protective check: Ensure strings for split() calls later
+        const situationText = typeof item.situation === 'string' ? item.situation : String(item.situation || "Ситуация уточняется...");
+        // Handle solution falling back to answer block if needed
+        let solutionText = "";
+        if (typeof item.solution === 'string') {
+          solutionText = item.solution;
+        } else if (item.answer && Array.isArray(item.answer)) {
+          // Basic block extraction if they used the wrong field
+          solutionText = item.answer.map((block: any) => block.children?.map((c: any) => c.text).join('')).join('\n');
+        } else {
+          solutionText = "Решение изучается нашими экспертами.";
+        }
+
         return {
           id: item.documentId,
-          category: item.category,
+          category: item.category || "dictionary",
           question: item.question,
-          situation: item.situation || "Ситуация уточняется в базе знаний...",
-          solution: item.solution || item.answer || "Решение изучается нашими экспертами.",
+          situation: situationText,
+          solution: solutionText,
           tips: tipsArray.length > 0 ? tipsArray : undefined,
-          icon: categoryIcons[item.category] || HelpCircle,
+          icon: categoryIcons[item.category || "dictionary"] || HelpCircle,
         };
       });
+
+      // Merge Strapi items with static scenarios if Strapi has data
+      if (strapiItems.length > 0) {
+        console.log(`📦 [FAQ] Merging ${strapiItems.length} Strapi items with static scenarios`);
+        return [...strapiItems, ...staticScenarios];
+      }
     }
 
     return isLoading ? [] : staticScenarios;
