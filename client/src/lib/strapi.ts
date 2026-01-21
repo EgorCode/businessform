@@ -5,9 +5,10 @@ import qs from 'qs';
  * Get the full Strapi URL.
  * Defaults to http://localhost:1337 if VITE_STRAPI_URL is not set.
  */
+// Hardcoded URL for production reliability
 export function getStrapiURL(path = ''): string {
-    return `${import.meta.env.VITE_STRAPI_URL || 'http://localhost:1337'
-        }${path}`;
+    const baseUrl = "http://193.233.85.240:1337";
+    return `${baseUrl}${path}`;
 }
 
 /**
