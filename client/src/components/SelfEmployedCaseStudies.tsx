@@ -93,16 +93,13 @@ export default function SelfEmployedCaseStudies() {
     return null;
   }
 
-  const displayCaseStudies = useMemo(() => {
-    if (error) {
-      console.log("⚠️ [CaseStudies] Using static data due to fetch error");
-      return staticCaseStudies;
-    }
+  // Transform Strapi items separately
+  const strapiCases = useMemo(() => {
+    if (!strapiResponse?.data) return [];
 
-    const strapiItems = strapiResponse?.data?.map((item: StrapiCaseStudy): CaseStudy => {
+    return strapiResponse.data.map((item: StrapiCaseStudy): CaseStudy => {
       const iconKey = Object.keys(iconMap).find(k => (item.niche || "").includes(k) || (item.role || "").includes(k)) || "Default";
 
-      // Safe parsing for savings object (which might be null or just a number if improperly entered)
       let safeSavings = { monthly: 0, before: 0, after: 0 };
       if (item.savings && typeof item.savings === 'object' && 'monthly' in item.savings) {
         safeSavings = item.savings;
@@ -126,12 +123,14 @@ export default function SelfEmployedCaseStudies() {
         taxRate: item.taxRate,
         clientType: item.clientType,
       };
-    }) || [];
+    });
+  }, [strapiResponse]);
 
-    // ALWAYS return merged array. If strapiItems is empty, it just returns staticCaseStudies.
-    // This guarantees the 4 static cases are visible even if Strapi returns [] or is loading.
-    return [...strapiItems, ...staticCaseStudies];
-  }, [strapiResponse, error]); // Removed isLoading to prevent flickering
+  // Combined state: Start with static, append Strapi later
+  const displayCaseStudies = useMemo(() => {
+    // Put Strapi items FIRST, then static items
+    return [...strapiCases, ...staticCaseStudies];
+  }, [strapiCases]);
 
   const toggleCase = (id: string, tier?: "lite" | "max") => {
     setExpandedCase(expandedCase === id ? null : id);
