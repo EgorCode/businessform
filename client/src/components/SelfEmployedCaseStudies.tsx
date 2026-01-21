@@ -100,20 +100,27 @@ export default function SelfEmployedCaseStudies() {
     }
 
     const strapiItems = strapiResponse?.data?.map((item: StrapiCaseStudy): CaseStudy => {
-      const iconKey = Object.keys(iconMap).find(k => item.niche.includes(k) || item.role.includes(k)) || "Default";
+      const iconKey = Object.keys(iconMap).find(k => (item.niche || "").includes(k) || (item.role || "").includes(k)) || "Default";
+
+      // Safe parsing for savings object (which might be null or just a number if improperly entered)
+      let safeSavings = { monthly: 0, before: 0, after: 0 };
+      if (item.savings && typeof item.savings === 'object' && 'monthly' in item.savings) {
+        safeSavings = item.savings;
+      }
+
       return {
         id: item.documentId,
-        name: item.name,
-        avatar: item.name.substring(0, 2).toUpperCase(),
-        avatarGradient: "from-green-500 to-emerald-500", // Default gradient for Strapi items
-        role: item.role,
-        niche: item.niche,
+        name: item.name || "Без имени",
+        avatar: (item.name || "U").substring(0, 2).toUpperCase(),
+        avatarGradient: "from-green-500 to-emerald-500",
+        role: item.role || "Роль не указана",
+        niche: item.niche || "Ниша не указана",
         icon: iconMap[iconKey],
-        problem: item.problem,
+        problem: item.problem || "",
         journey: Array.isArray(item.journey) ? item.journey : [],
-        result: item.result,
-        subscription: item.subscription,
-        savings: item.savings,
+        result: item.result || "",
+        subscription: item.subscription || "lite",
+        savings: safeSavings,
         warning: item.warning,
         features: Array.isArray(item.features) ? item.features : [],
         taxRate: item.taxRate,
