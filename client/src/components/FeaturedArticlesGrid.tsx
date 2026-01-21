@@ -61,21 +61,24 @@ export default function FeaturedArticlesGrid() {
             return staticArticleItems;
         }
 
-        if (strapiResponse?.data && strapiResponse.data.length > 0) {
-            console.log("📦 [Featured] Transforming Strapi featured articles...");
-            return strapiResponse.data.map((item: StrapiArticle): ArticleItem => ({
-                id: item.documentId,
-                documentId: item.documentId,
-                title: item.title,
-                author: item.author || "Редакция",
-                category: item.category,
-                image: item.isPopular ? "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=300&h=300" : "https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?auto=format&fit=crop&q=80&w=300&h=300", // Fallback if no media field yet
-                description: item.excerpt,
-                link: "#",
-                tags: Array.isArray(item.tags) ? item.tags : (typeof item.tags === 'string' ? item.tags.split(',') : []),
-                readTime: item.readTime,
-                content: typeof item.content === 'string' ? item.content : JSON.stringify(item.content),
-            }));
+        const strapiItems = strapiResponse?.data?.map((item: StrapiArticle): ArticleItem => ({
+            id: item.documentId,
+            documentId: item.documentId,
+            title: item.title,
+            author: item.author || "Редакция",
+            category: item.category,
+            image: item.isPopular ? "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=300&h=300" : "https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?auto=format&fit=crop&q=80&w=300&h=300", // Fallback if no media field yet
+            description: item.excerpt,
+            link: "#",
+            tags: Array.isArray(item.tags) ? item.tags : (typeof item.tags === 'string' ? item.tags.split(',') : []),
+            readTime: item.readTime,
+            content: typeof item.content === 'string' ? item.content : JSON.stringify(item.content),
+        })) || [];
+
+        // Combine Strapi items with static items
+        if (strapiItems.length > 0) {
+            console.log(`📦 [Featured] Merging ${strapiItems.length} Strapi items with static content`);
+            return [...strapiItems, ...staticArticleItems];
         }
 
         return isLoading ? [] : staticArticleItems;

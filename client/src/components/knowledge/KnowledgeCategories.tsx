@@ -107,29 +107,33 @@ export default function KnowledgeCategories({ category, searchQuery, selectedTag
       return staticArticles;
     }
 
-    if (strapiResponse?.data && strapiResponse.data.length > 0) {
-      console.log("📦 [Knowledge] Transforming Strapi articles...");
-      return strapiResponse.data.map((item: StrapiArticle): Article => ({
-        id: item.documentId,
-        documentId: item.documentId,
-        title: item.title,
-        category: item.category,
-        excerpt: item.excerpt,
-        content: typeof item.content === 'string' ? item.content : JSON.stringify(item.content), // Fallback simplification
-        author: item.author,
-        readTime: item.readTime,
-        tags: Array.isArray(item.tags) ? item.tags : (typeof item.tags === 'string' ? item.tags.split(',') : []),
-        views: item.views,
-        rating: item.rating,
-        isFavorite: item.isFavorite,
-        isNew: item.isNew,
-        isPopular: item.isPopular,
-        publishDate: item.publishDate,
-      }));
+    const strapiItems = strapiResponse?.data?.map((item: StrapiArticle): Article => ({
+      id: item.documentId,
+      documentId: item.documentId,
+      title: item.title,
+      category: item.category || "starting",
+      excerpt: item.excerpt,
+      content: typeof item.content === 'string' ? item.content : JSON.stringify(item.content),
+      author: item.author || "Редакция",
+      readTime: item.readTime || "5 мин",
+      tags: Array.isArray(item.tags) ? item.tags : (typeof item.tags === 'string' ? item.tags.split(',') : []),
+      views: item.views || 0,
+      rating: item.rating || 5.0,
+      isFavorite: item.isFavorite || false,
+      isNew: item.isNew || false,
+      isPopular: item.isPopular || false,
+      publishDate: item.publishDate,
+    })) || [];
+
+    // Combine Strapi items with static items
+    if (strapiItems.length > 0) {
+      console.log(`📦 [Knowledge] Merging ${strapiItems.length} Strapi items with static content`);
+      return [...strapiItems, ...staticArticles];
     }
 
     return isLoading ? [] : staticArticles;
   }, [strapiResponse, error, isLoading]);
+
 
   // Sync initial articles to local state for toggling favorites
   ReactUseEffect(() => {

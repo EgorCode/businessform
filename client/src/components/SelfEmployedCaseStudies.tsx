@@ -99,29 +99,32 @@ export default function SelfEmployedCaseStudies() {
       return staticCaseStudies;
     }
 
-    if (strapiResponse?.data && strapiResponse.data.length > 0) {
-      console.log("📦 [CaseStudies] Transforming Strapi case studies...");
-      return strapiResponse.data.map((item: StrapiCaseStudy): CaseStudy => {
-        const iconKey = Object.keys(iconMap).find(k => item.niche.includes(k) || item.role.includes(k)) || "Default";
-        return {
-          id: item.documentId,
-          name: item.name,
-          avatar: item.name.substring(0, 2).toUpperCase(),
-          avatarGradient: "from-green-500 to-emerald-500", // Default gradient for Strapi items
-          role: item.role,
-          niche: item.niche,
-          icon: iconMap[iconKey],
-          problem: item.problem,
-          journey: Array.isArray(item.journey) ? item.journey : [],
-          result: item.result,
-          subscription: item.subscription,
-          savings: item.savings,
-          warning: item.warning,
-          features: Array.isArray(item.features) ? item.features : [],
-          taxRate: item.taxRate,
-          clientType: item.clientType,
-        };
-      });
+    const strapiItems = strapiResponse?.data?.map((item: StrapiCaseStudy): CaseStudy => {
+      const iconKey = Object.keys(iconMap).find(k => item.niche.includes(k) || item.role.includes(k)) || "Default";
+      return {
+        id: item.documentId,
+        name: item.name,
+        avatar: item.name.substring(0, 2).toUpperCase(),
+        avatarGradient: "from-green-500 to-emerald-500", // Default gradient for Strapi items
+        role: item.role,
+        niche: item.niche,
+        icon: iconMap[iconKey],
+        problem: item.problem,
+        journey: Array.isArray(item.journey) ? item.journey : [],
+        result: item.result,
+        subscription: item.subscription,
+        savings: item.savings,
+        warning: item.warning,
+        features: Array.isArray(item.features) ? item.features : [],
+        taxRate: item.taxRate,
+        clientType: item.clientType,
+      };
+    }) || [];
+
+    // Combine Strapi items with static items
+    if (strapiItems.length > 0) {
+      console.log(`📦 [CaseStudies] Merging ${strapiItems.length} Strapi items with static content`);
+      return [...strapiItems, ...staticCaseStudies];
     }
 
     return isLoading ? [] : staticCaseStudies;
