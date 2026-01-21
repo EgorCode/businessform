@@ -128,14 +128,10 @@ export default function SelfEmployedCaseStudies() {
       };
     }) || [];
 
-    // Combine Strapi items with static items
-    if (strapiItems.length > 0) {
-      console.log(`📦 [CaseStudies] Merging ${strapiItems.length} Strapi items with static content`);
-      return [...strapiItems, ...staticCaseStudies];
-    }
-
-    return isLoading ? [] : staticCaseStudies;
-  }, [strapiResponse, error, isLoading]);
+    // ALWAYS return merged array. If strapiItems is empty, it just returns staticCaseStudies.
+    // This guarantees the 4 static cases are visible even if Strapi returns [] or is loading.
+    return [...strapiItems, ...staticCaseStudies];
+  }, [strapiResponse, error]); // Removed isLoading to prevent flickering
 
   const toggleCase = (id: string, tier?: "lite" | "max") => {
     setExpandedCase(expandedCase === id ? null : id);

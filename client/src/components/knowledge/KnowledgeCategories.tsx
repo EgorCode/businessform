@@ -101,13 +101,11 @@ export default function KnowledgeCategories({ category, searchQuery, selectedTag
   }
 
   // Transform and sync local state
-  const articles = useMemo(() => {
-    if (error) {
-      console.log("⚠️ [Knowledge] Using static articles due to fetch error");
-      return staticArticles;
-    }
+  // Transform Strapi items
+  const strapiArticles = useMemo(() => {
+    if (!strapiResponse?.data) return [];
 
-    const strapiItems = strapiResponse?.data?.map((item: StrapiArticle): Article => ({
+    return strapiResponse.data.map((item: StrapiArticle): Article => ({
       id: item.documentId,
       documentId: item.documentId,
       title: item.title,
@@ -123,25 +121,24 @@ export default function KnowledgeCategories({ category, searchQuery, selectedTag
       isNew: item.isNew || false,
       isPopular: item.isPopular || false,
       publishDate: item.publishDate,
-    })) || [];
+    }));
+  }, [strapiResponse]);
 
-    // Combine Strapi items with static items
-    // ALWAYS return static items as fallback, even if strapi returns 0 items but connection is successful
-    if (strapiResponse?.data) {
-      console.log(`📦 [Knowledge] Merging ${strapiItems.length} Strapi items with static content`);
-      return [...strapiItems, ...staticArticles];
-    }
-
-    return isLoading ? [] : staticArticles;
-  }, [strapiResponse, error, isLoading]);
-
-
-  // Sync initial articles to local state for toggling favorites
+  // Sync articles to local state (Merging Static + Strapi)
   ReactUseEffect(() => {
-    if (articles.length > 0) {
-      setLocalArticles(articles);
+    // Start with static
+    let merged = [...staticArticles];
+
+    // Append Strapi if available
+    if (strapiArticles.length > 0) {
+      // Avoid duplicates if IDs conflict (simple check)
+      const staticIds = new Set(staticArticles.map(a => a.id));
+      const newItems = strapiArticles.filter(a => !staticIds.has(a.id));
+      merged = [...newItems, ...staticArticles];
     }
-  }, [articles]);
+
+    setLocalArticles(merged);
+  }, [strapiArticles]);
 
   const toggleFavorite = (articleId: number | string) => {
     setLocalArticles(prev =>
