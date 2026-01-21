@@ -126,7 +126,8 @@ export default function KnowledgeCategories({ category, searchQuery, selectedTag
     })) || [];
 
     // Combine Strapi items with static items
-    if (strapiItems.length > 0) {
+    // ALWAYS return static items as fallback, even if strapi returns 0 items but connection is successful
+    if (strapiResponse?.data) {
       console.log(`📦 [Knowledge] Merging ${strapiItems.length} Strapi items with static content`);
       return [...strapiItems, ...staticArticles];
     }
