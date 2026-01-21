@@ -1,3 +1,8 @@
+import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchAPI } from "@/lib/strapi";
+import { FAQItem, StrapiResponse } from "@/types/strapi";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,26 +13,30 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { HelpCircle, AlertTriangle, TrendingUp, Users, Clock, DollarSign, FileText, Shield } from "lucide-react";
-import { useState } from "react";
 
 interface FAQScenario {
   id: string;
-  category: "limits" | "zero-income" | "transition" | "hiring" | "taxes" | "documents" | "dictionary";
+  category: string;
   question: string;
   situation: string;
   solution: string;
   tips?: string[];
   icon: any;
 }
-// ... (keep default export line if not captured, but we are inside component? No, interface is outside)
-// Actually I need to be careful with context.
-// Let's replace the interface definition and the categories array inside the component.
 
-// I will target the interface definition first.
-
+const categoryIcons: Record<string, any> = {
+  limits: TrendingUp,
+  "zero-income": Clock,
+  transition: Users,
+  hiring: Users,
+  taxes: DollarSign,
+  documents: FileText,
+  dictionary: HelpCircle,
+};
 
 export default function PracticalFAQ() {
-  const scenarios: FAQScenario[] = [
+  const { settings } = useSiteSettings();
+  const staticScenarios: FAQScenario[] = [
     {
       id: "exceed-npd-limit",
       category: "limits",
@@ -139,6 +148,46 @@ export default function PracticalFAQ() {
     },
   ];
 
+  // Fetch from Strapi v5
+  const { data: strapiResponse, isLoading, error } = useQuery<StrapiResponse<FAQItem[]>>({
+    queryKey: ["/faqs"],
+    queryFn: () => fetchAPI<StrapiResponse<FAQItem[]>>("/faqs"),
+    retry: 1,
+  });
+
+  // Handle visibility
+  if (settings && settings.showFAQ === false) {
+    return null;
+  }
+
+  const scenarios = useMemo(() => {
+    if (error) return staticScenarios;
+
+    if (strapiResponse?.data && strapiResponse.data.length > 0) {
+      return strapiResponse.data.map((item: FAQItem): FAQScenario => {
+        let tipsArray: string[] = [];
+        if (Array.isArray(item.tips)) {
+          tipsArray = item.tips;
+        } else if (typeof item.tips === 'string') {
+          // Try to split by newline if it's a string
+          tipsArray = item.tips.split('\n').filter(t => t.trim().length > 0);
+        }
+
+        return {
+          id: item.documentId,
+          category: item.category,
+          question: item.question,
+          situation: item.situation || "Ситуация уточняется в базе знаний...",
+          solution: item.solution || item.answer || "Решение изучается нашими экспертами.",
+          tips: tipsArray.length > 0 ? tipsArray : undefined,
+          icon: categoryIcons[item.category] || HelpCircle,
+        };
+      });
+    }
+
+    return isLoading ? [] : staticScenarios;
+  }, [strapiResponse, error, isLoading]);
+
   const categories = [
     { id: "all", label: "Все сценарии", icon: HelpCircle },
     { id: "limits", label: "Лимиты и превышения", icon: TrendingUp },
@@ -153,7 +202,15 @@ export default function PracticalFAQ() {
 
   const filteredScenarios = selectedCategory === "all"
     ? scenarios
-    : scenarios.filter(s => s.category === selectedCategory);
+    : scenarios.filter((s: FAQScenario) => s.category === selectedCategory);
+
+  if (isLoading && !strapiResponse) {
+    return (
+      <section className="bg-background py-20 flex justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </section>
+    );
+  }
 
   return (
     <section className="bg-background py-20">

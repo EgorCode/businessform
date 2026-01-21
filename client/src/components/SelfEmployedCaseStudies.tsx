@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -6,12 +6,16 @@ import {
   Palette, Home, Hammer, BookOpen,
   TrendingUp, Users, AlertTriangle, CheckCircle2,
   Sparkles, Calendar, PiggyBank, Bell,
-  ArrowRight, Building2, Receipt
+  ArrowRight, Building2, Receipt, User
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAIAssistant } from "@/contexts/AIAssistantContext";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchAPI, getStrapiMedia } from "@/lib/strapi";
+import { CaseStudyItem as StrapiCaseStudy, StrapiResponse } from "@/types/strapi";
 import { WizardDialog } from "@/components/WizardDialog";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 interface CaseStudy {
   id: string;
@@ -35,11 +39,12 @@ interface CaseStudy {
     type: "limit" | "transition";
   };
   features: string[];
-  taxRate: "4%" | "6%" | "mixed";
+  taxRate: string;
   clientType: string;
 }
 
-const caseStudies: CaseStudy[] = [
+// Fallback data
+const staticCaseStudies: CaseStudy[] = [
   {
     id: "anna-designer",
     name: "Анна",
@@ -60,83 +65,67 @@ const caseStudies: CaseStudy[] = [
     taxRate: "6%",
     clientType: "Юридические лица"
   },
-  {
-    id: "irina-rental",
-    name: "Ирина",
-    avatar: "ИГ",
-    avatarGradient: "from-blue-500 to-cyan-500",
-    role: "Владелица гостевого дома",
-    niche: "Аренда",
-    icon: Home,
-    problem: "Ирина сдает посуточно квартиру в Сочи и платит 13% как физлицо (НДФЛ). При доходе 100 000 ₽ в месяц она отдает 13 000 ₽ налога.",
-    journey: [
-      "Ирина видит на главной блок «Владельцы квартир»",
-      "Сравнительная таблица показывает, что как самозанятая она будет платить всего 4% (4 000 ₽)",
-      "Выгода: Экономия 9 000 ₽ в месяц, 108 000 ₽ в год"
-    ],
-    result: "Ирина регистрируется через портал. Теперь в личном кабинете она видит график своей прибыли.",
-    savings: {
-      before: 13000,
-      after: 4000,
-      monthly: 9000
-    },
-    warning: {
-      text: "Ваш доход растет, вы использовали 40% годового лимита",
-      type: "limit"
-    },
-    features: ["График прибыли", "Предупреждения о лимите", "Календарь платежей"],
-    taxRate: "4%",
-    clientType: "Физические лица"
-  },
-  {
-    id: "alexey-craftsman",
-    name: "Алексей",
-    avatar: "АМ",
-    avatarGradient: "from-amber-500 to-orange-500",
-    role: "Мастер мебели",
-    niche: "Ремесло и Рост",
-    icon: Hammer,
-    problem: "Алексей делает столы из эпоксидной смолы. Продажи на Авито выросли. Он нанимает помощника и понимает, что его доход скоро превысит 2.4 млн руб. в год.",
-    journey: [
-      "Алексей заносит выручку в личном кабинете",
-      "Срабатывает алгоритм аппроксимации: за 6 месяцев он заработал 1.8 млн",
-      "Выскакивает баннер: «Внимание! При таком темпе лимит самозанятого будет исчерпан через 2 месяца. Рекомендуем переход на ИП»",
-      "Алексей нажимает на баннер и попадает на сравнение «ИП на УСН vs Самозанятость»"
-    ],
-    result: "Алексей покупает Max-подписку. Портал дает ему пошаговый план: как закрыть самозанятость и в тот же день подать на ИП.",
-    subscription: "max",
-    warning: {
-      text: "Лимит будет исчерпан через 2 месяца",
-      type: "transition"
-    },
-    features: ["Прогноз доходов", "План перехода на ИП", "Консультация по закрытию НПД"],
-    taxRate: "mixed",
-    clientType: "Физические и юридические лица"
-  },
-  {
-    id: "maxim-blogger",
-    name: "Максим",
-    avatar: "МБ",
-    avatarGradient: "from-rose-500 to-red-500",
-    role: "Блогер / Эксперт",
-    niche: "Курсы и контент",
-    icon: BookOpen,
-    problem: "Максим ведет блог про ремонт и продает гайды. Много мелких платежей от физлиц (по 500-1000 руб.). Сложно уследить за всеми и не запутаться в налогах.",
-    journey: [
-      "Максим подключает профиль и видит календарь налогов",
-      "Раз в месяц он просто загружает выписку, а сайт строит визуальный график: сколько «грязными», сколько «чистыми»",
-      "В разделе «Новости» он читает авторскую заметку о том, как правильно маркировать рекламу самозанятому"
-    ],
-    result: "Максим спокоен за легальность. Он использует функцию «Календарь взносов в СФР», чтобы добровольно платить за пенсионный стаж.",
-    features: ["Календарь налогов", "Визуальный график доходов", "Добровольные взносы в СФР", "Маркировка рекламы"],
-    taxRate: "4%",
-    clientType: "Физические лица"
-  }
 ];
 
+const iconMap: Record<string, any> = {
+  "Творчество": Palette,
+  "Аренда": Home,
+  "Ремесло": Hammer,
+  "Контент": BookOpen,
+  "IT": Sparkles,
+  "Default": Users
+};
+
 export default function SelfEmployedCaseStudies() {
+  const { settings } = useSiteSettings();
   const { toggleMinimized, setSubscriptionTier } = useAIAssistant();
   const [expandedCase, setExpandedCase] = useState<string | null>(null);
+
+  // Fetch from Strapi v5
+  const { data: strapiResponse, isLoading, error } = useQuery<StrapiResponse<StrapiCaseStudy[]>>({
+    queryKey: ["/case-studies-list"],
+    queryFn: () => fetchAPI<StrapiResponse<StrapiCaseStudy[]>>("/case-studies"),
+    retry: 1,
+  });
+
+  // Handle visibility
+  if (settings && settings.showCaseStudies === false) {
+    return null;
+  }
+
+  const displayCaseStudies = useMemo(() => {
+    if (error) {
+      console.log("⚠️ [CaseStudies] Using static data due to fetch error");
+      return staticCaseStudies;
+    }
+
+    if (strapiResponse?.data && strapiResponse.data.length > 0) {
+      console.log("📦 [CaseStudies] Transforming Strapi case studies...");
+      return strapiResponse.data.map((item: StrapiCaseStudy): CaseStudy => {
+        const iconKey = Object.keys(iconMap).find(k => item.niche.includes(k) || item.role.includes(k)) || "Default";
+        return {
+          id: item.documentId,
+          name: item.name,
+          avatar: item.name.substring(0, 2).toUpperCase(),
+          avatarGradient: "from-green-500 to-emerald-500", // Default gradient for Strapi items
+          role: item.role,
+          niche: item.niche,
+          icon: iconMap[iconKey],
+          problem: item.problem,
+          journey: Array.isArray(item.journey) ? item.journey : [],
+          result: item.result,
+          subscription: item.subscription,
+          savings: item.savings,
+          warning: item.warning,
+          features: Array.isArray(item.features) ? item.features : [],
+          taxRate: item.taxRate,
+          clientType: item.clientType,
+        };
+      });
+    }
+
+    return isLoading ? [] : staticCaseStudies;
+  }, [strapiResponse, error, isLoading]);
 
   const toggleCase = (id: string, tier?: "lite" | "max") => {
     setExpandedCase(expandedCase === id ? null : id);
@@ -145,6 +134,13 @@ export default function SelfEmployedCaseStudies() {
     }
   };
 
+  if (isLoading && !strapiResponse) {
+    return (
+      <div className="py-20 flex justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <section className="border-b py-20" id="case-studies">
@@ -193,7 +189,7 @@ export default function SelfEmployedCaseStudies() {
 
         {/* Карточки кейсов */}
         <div className="grid gap-6 md:grid-cols-2">
-          {caseStudies.map((caseItem) => {
+          {displayCaseStudies.map((caseItem: CaseStudy) => {
             const Icon = caseItem.icon;
             const isExpanded = expandedCase === caseItem.id;
 
@@ -282,7 +278,7 @@ export default function SelfEmployedCaseStudies() {
                           Путь на портале
                         </div>
                         <div className="space-y-3">
-                          {caseItem.journey.map((step, idx) => (
+                          {caseItem.journey.map((step: string, idx: number) => (
                             <div key={idx} className="flex gap-3">
                               <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground flex-shrink-0">
                                 {idx + 1}
@@ -319,7 +315,7 @@ export default function SelfEmployedCaseStudies() {
                           </span>
                         </div>
                         <div className="flex flex-wrap gap-2">
-                          {caseItem.features.map((feature, idx) => (
+                          {caseItem.features.map((feature: string, idx: number) => (
                             <Badge key={idx} variant="secondary" className="text-xs">
                               {feature}
                             </Badge>
