@@ -42,13 +42,30 @@ const LiveVisitorCounter = () => {
     }, [visitorCount]);
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            setVisitorCount(prev => {
-                const change = Math.floor(Math.random() * 11) - 5;
-                const newCount = prev + change;
-                return Math.max(105, Math.min(140, newCount));
-            });
-        }, 1660);
+        const fetchVisitorCount = async () => {
+            try {
+                // We use POST /api/visitor-ping to both register our presence and get the current count
+                const response = await fetch('/api/visitor-ping', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    // We add a small base offset (120) so the site looks "busy" but still reflects real traffic changes.
+                    // If you want purely real numbers, change 120 to 0.
+                    const BASE_OFFSET = 120;
+                    setVisitorCount(BASE_OFFSET + data.count);
+                }
+            } catch (error) {
+                console.error('Error fetching visitor count:', error);
+            }
+        };
+
+        // Initial fetch
+        fetchVisitorCount();
+
+        // Ping every 30 seconds
+        const interval = setInterval(fetchVisitorCount, 30000);
 
         return () => clearInterval(interval);
     }, []);

@@ -11,6 +11,10 @@ import adminRoutes from "./routes/admin";
 import telegramRoutes from "./routes/telegram";
 import { authService } from "./services/authService";
 
+// In-memory visitor tracking
+const activeVisitors = new Map<string, number>();
+const VISITOR_TIMEOUT = 60000; // 1 minute
+
 // todo: remove mock functionality - replace with real AI API
 const businessIdeas = [
   {
@@ -355,30 +359,56 @@ const businessIdeas = [
 export async function registerRoutes(app: Express): Promise<Server> {
   // Подключаем AI роуты
   app.use('/api/ai', aiRoutes);
-  
+
   // Подключаем Admin роуты
   app.use('/api/admin', adminRoutes);
-  
+
   // Подключаем Telegram роуты
   app.use('/api/telegram', telegramRoutes);
-  
+
   // Инициализируем администратора по умолчанию
   await authService.initializeDefaultAdmin();
+
+  // Visitor Tracking Routes
+  app.post("/api/visitor-ping", (req, res) => {
+    const visitorId = req.ip + (req.get('user-agent') || '');
+    activeVisitors.set(visitorId, Date.now());
+
+    // Clean up stale visitors
+    const now = Date.now();
+    activeVisitors.forEach((lastSeen, id) => {
+      if (now - lastSeen > VISITOR_TIMEOUT) {
+        activeVisitors.delete(id);
+      }
+    });
+
+    res.json({ count: activeVisitors.size });
+  });
+
+  app.get("/api/visitor-count", (req, res) => {
+    const now = Date.now();
+    activeVisitors.forEach((lastSeen, id) => {
+      if (now - lastSeen > VISITOR_TIMEOUT) {
+        activeVisitors.delete(id);
+      }
+    });
+    res.json({ count: activeVisitors.size });
+  });
   // Calculate НПД tax
   app.post("/api/calculate/npd", (req, res) => {
     try {
       const data = npdCalculationSchema.parse(req.body);
       const monthlyIncome = data.monthlyIncome;
       const annualIncome = monthlyIncome * 12;
-      
+
       // Check if income exceeds NPD limit (2.4M per year)
       const npdLimit = 2400000; // 2.4 million rubles per year
       const monthlyLimit = npdLimit / 12; // 200K per month
-      
+
       let npdTax;
       let rate;
       let warning = null;
-      
+
       if (annualIncome > npdLimit) {
         npdTax = 0;
         rate = 0;
@@ -387,7 +417,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         npdTax = monthlyIncome * 0.04; // 4% for individuals, 6% for legal entities
         rate = 0.04;
       }
-      
+
       const annualTax = npdTax * 12;
 
       res.json({
@@ -423,19 +453,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const tax6 = yearlyIncome * 0.06;
       const tax15 = Math.max((yearlyIncome - yearlyExpenses) * 0.15, 0);
-      
+
       // Calculate VAT for USN with income > 60M (2025 changes)
       const vatThreshold = 60000000; // 60 million rubles
       const hasVatObligation = yearlyIncome > vatThreshold;
       let vat5 = 0;
       let vat7 = 0;
-      
+
       if (hasVatObligation) {
         // Simplified VAT calculation (5% for certain operations, 7% for others)
         vat5 = yearlyIncome * 0.05;
         vat7 = yearlyIncome * 0.07;
       }
-      
+
       // Check USN limits (increased in 2025)
       const usnIncomeLimit = 300000000; // 300M per year (increased from 150M)
       const usnEmployeeLimit = 130; // 130 employees (increased from 100)
@@ -576,7 +606,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // News API endpoints
-  
+
   // Get news categories
   app.get("/api/news/categories", async (_req, res) => {
     try {
@@ -596,15 +626,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const offset = (page - 1) * limit;
 
       let whereConditions = [eq(news.isActive, true)];
-      
+
       if (category) {
         whereConditions.push(eq(news.categoryId, parseInt(category)));
       }
-      
+
       if (businessForm) {
         whereConditions.push(like(news.businessForms, `%${businessForm}%`));
       }
-      
+
       if (search) {
         whereConditions.push(
           or(
@@ -648,7 +678,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         .select({ count: news.id })
         .from(news)
         .where(and(...whereConditions));
-      
+
       const totalCount = totalCountResult.length;
       const totalPages = Math.ceil(totalCount / limit);
 
@@ -678,7 +708,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const limitParam = req.query.limit;
       const limit = limitParam ? parseInt(limitParam as string) : 3;
-      
+
       const featuredNews = await db
         .select({
           id: news.id,
@@ -716,7 +746,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/news/:id", async (req, res) => {
     try {
       const newsId = parseInt(req.params.id);
-      
+
       if (isNaN(newsId)) {
         return res.status(400).json({ error: "Invalid news ID" });
       }
@@ -762,9 +792,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/news", async (req, res) => {
     try {
       const newsData = insertNewsSchema.parse(req.body);
-      
+
       const result = await db.insert(news).values(newsData).returning();
-      
+
       res.status(201).json(result[0]);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -780,13 +810,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/api/news/:id", async (req, res) => {
     try {
       const newsId = parseInt(req.params.id);
-      
+
       if (isNaN(newsId)) {
         return res.status(400).json({ error: "Invalid news ID" });
       }
 
       const newsData = insertNewsSchema.parse(req.body);
-      
+
       const result = await db
         .update(news)
         .set(newsData)
@@ -812,7 +842,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/news/:id", async (req, res) => {
     try {
       const newsId = parseInt(req.params.id);
-      
+
       if (isNaN(newsId)) {
         return res.status(400).json({ error: "Invalid news ID" });
       }
