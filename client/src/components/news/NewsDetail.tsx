@@ -12,19 +12,45 @@ interface NewsDetailProps {
   newsId?: string;
 }
 
+import { staticNews } from "@/data/staticNews";
+
 export default function NewsDetail({ newsId: propNewsId }: NewsDetailProps) {
   const params = useParams();
   const newsId = propNewsId || params.id;
 
-  // Fetch from Strapi v5
-  const { data: strapiResponse, isLoading, error: fetchError } = useQuery<StrapiResponse<StrapiNewsItem>>({
+  // Determine if it is a static news item
+  const isStatic = newsId?.toString().startsWith('static-');
+
+  // Fetch from Strapi v5 (ONLY if not static)
+  const { data: strapiResponse, isLoading: isStrapiLoading, error: fetchError } = useQuery<StrapiResponse<StrapiNewsItem>>({
     queryKey: [`/news-items/${newsId}`],
     queryFn: () => fetchAPI<StrapiResponse<StrapiNewsItem>>(`/news-items/${newsId}`),
-    enabled: !!newsId,
+    enabled: !!newsId && !isStatic,
     retry: 1,
   });
 
   const news = useMemo(() => {
+    // 1. Handle Static News
+    if (isStatic) {
+      const staticItem = staticNews.find(n => n.id === newsId);
+      if (staticItem) {
+        return {
+          id: staticItem.id,
+          title: staticItem.title,
+          summary: staticItem.summary,
+          description: staticItem.summary,
+          content: staticItem.content,
+          imageUrl: staticItem.imageUrl,
+          publishedAt: staticItem.publishedAt,
+          categoryName: staticItem.categoryName,
+          tags: staticItem.tags || [],
+          businessForms: staticItem.businessForms || []
+        };
+      }
+      return null;
+    }
+
+    // 2. Handle Strapi News
     if (strapiResponse?.data) {
       console.log("📦 [NewsDetail] Transforming Strapi news item...");
       const item = strapiResponse.data;
@@ -42,7 +68,9 @@ export default function NewsDetail({ newsId: propNewsId }: NewsDetailProps) {
       };
     }
     return null;
-  }, [strapiResponse]);
+  }, [strapiResponse, isStatic, newsId]);
+
+  const isLoading = isStatic ? false : isStrapiLoading;
 
   const formatDate = (dateString: string) => {
     if (!dateString) return "";
@@ -137,7 +165,7 @@ export default function NewsDetail({ newsId: propNewsId }: NewsDetailProps) {
 
             <div className="flex items-center text-sm text-muted-foreground">
               <Calendar className="w-4 h-4 mr-1" />
-              {formatDate(news.publishedAt)}
+              {formatDate(news.publishedAt || "")}
             </div>
           </div>
 

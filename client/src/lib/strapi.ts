@@ -7,8 +7,7 @@ import qs from 'qs';
  */
 // Hardcoded URL for production reliability
 export function getStrapiURL(path = ''): string {
-    const baseUrl = "http://193.233.85.240:1337";
-    return `${baseUrl}${path}`;
+    return `${import.meta.env.VITE_STRAPI_URL || 'http://localhost:1337'}${path}`;
 }
 
 /**

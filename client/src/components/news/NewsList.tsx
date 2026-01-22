@@ -2,117 +2,113 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import NewsCard from "./NewsCard";
 import { Search, Filter, ChevronLeft, ChevronRight } from "lucide-react";
-import { News, NewsCategory } from "@shared/schema";
+import { useQuery } from "@tanstack/react-query";
+import { fetchAPI, getStrapiMedia } from "@/lib/strapi";
+import { StrapiResponse, NewsItem as StrapiNewsItem } from "@/types/strapi";
+
+import { staticNews, News } from "@/data/staticNews";
+
+// No local staticNews array definition needed anymore
 
 interface NewsListProps {
-  initialNews?: (News & {
-    categoryName?: string;
-    categorySlug?: string;
-    tags?: string[];
-    businessForms?: string[];
-  })[];
-  initialCategories?: NewsCategory[];
+  initialNews?: any[];
+  initialCategories?: any[];
   featured?: boolean;
 }
 
-export default function NewsList({ initialNews = [], initialCategories = [], featured = false }: NewsListProps) {
-  const [news, setNews] = useState<(News & {
-    categoryName?: string;
-    categorySlug?: string;
-    tags?: string[];
-    businessForms?: string[];
-  })[]>(initialNews);
-  const [categories, setCategories] = useState<NewsCategory[]>(initialCategories);
-  const [loading, setLoading] = useState(false);
+export default function NewsList({ featured = false }: NewsListProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [selectedBusinessForm, setSelectedBusinessForm] = useState<string>("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalCount, setTotalCount] = useState(0);
+  const pageSize = featured ? 3 : 12;
 
-  const businessForms = [
-    { value: "all", label: "Все формы" },
-    { value: "НПД", label: "НПД" },
-    { value: "ИП", label: "ИП" },
-    { value: "ООО", label: "ООО" }
+  // 2. Fetch Dynamic News from Strapi
+  const buildQuery = () => {
+    const params = new URLSearchParams();
+    params.append("pagination[page]", currentPage.toString());
+    params.append("pagination[pageSize]", pageSize.toString());
+    params.append("sort[0]", "publishedAt:desc");
+    params.append("populate", "*");
+
+    if (searchTerm) {
+      params.append("filters[title][$containsi]", searchTerm);
+    }
+
+    if (selectedCategory && selectedCategory !== "all") {
+      params.append("filters[category][$eq]", selectedCategory);
+    }
+
+    return `/news-items?${params.toString()}`;
+  };
+
+  const { data: strapiResponse, isLoading } = useQuery({
+    queryKey: ["news-list", currentPage, searchTerm, selectedCategory, featured],
+    queryFn: () => fetchAPI<StrapiResponse<StrapiNewsItem[]>>(buildQuery()),
+    retry: 1
+  });
+
+  const strapiNews = strapiResponse?.data?.map((item: StrapiNewsItem) => ({
+    id: item.documentId || item.id, // Use documentId if available
+    title: item.title,
+    summary: item.summary,
+    content: item.content || "",
+    publishedAt: item.publishedAt,
+    categoryName: item.category || "Новости",
+    imageUrl: getStrapiMedia(item.image?.url),
+    businessForms: [],
+    tags: [],
+    isStatic: false
+  })) || [];
+
+  // 3. Combine Static + Strapi Data
+  // Filter static news based on search term and category locally
+  const filteredStaticNews = staticNews.filter(item => {
+    if (searchTerm && !item.title.toLowerCase().includes(searchTerm.toLowerCase())) return false;
+    if (selectedCategory !== "all" && item.categoryName !== selectedCategory) return false;
+    return true;
+  });
+
+  // Merge logic:
+  // If "Featured" (homepage), take top 3 from mixed list.
+  // If "All News" (NewsPage), show everything.
+  // Order: Strapi (Newest) -> Static (Legacy)
+  const allNews = [...strapiNews, ...filteredStaticNews];
+
+  // Apply pagination manually if needed for combined list, but since Strapi is paginated on server,
+  // and static is small, we just append static to the current page.
+  // Ideally, static news should only appear on Page 1.
+  const displayNews = (currentPage === 1) ? [...strapiNews, ...filteredStaticNews] : strapiNews;
+
+  // If featured, limit to 3 items total
+  const finalNews = featured ? displayNews.slice(0, 3) : displayNews;
+
+  const totalCount = (strapiResponse?.meta?.pagination?.total || 0) + filteredStaticNews.length;
+  const totalPages = Math.ceil(totalCount / pageSize) || 1;
+
+  // Categories
+  const categories = [
+    { id: "НПД", name: "НПД" },
+    { id: "ИП", name: "ИП" },
+    { id: "ООО", name: "ООО" },
+    { id: "Законодательство", name: "Законодательство" },
+    { id: "ФНС", name: "ФНС" }
   ];
-
-  const fetchNews = async (page = 1, reset = false) => {
-    setLoading(true);
-    
-    try {
-      const params = new URLSearchParams({
-        page: page.toString(),
-        limit: featured ? "3" : "12"
-      });
-
-      if (searchTerm) params.append("search", searchTerm);
-      if (selectedCategory && selectedCategory !== "all") params.append("category", selectedCategory);
-      if (selectedBusinessForm && selectedBusinessForm !== "all") params.append("businessForm", selectedBusinessForm);
-
-      const endpoint = featured ? "/api/news/featured" : "/api/news";
-      const response = await fetch(`${endpoint}?${params}`);
-      const data = await response.json();
-
-      if (featured) {
-        setNews(data);
-      } else {
-        setNews(data.news);
-        setTotalPages(data.pagination?.totalPages || 1);
-        setTotalCount(data.pagination?.totalCount || 0);
-      }
-    } catch (error) {
-      console.error("Error fetching news:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchCategories = async () => {
-    try {
-      const response = await fetch("/api/news/categories");
-      const data = await response.json();
-      setCategories(data);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-    }
-  };
-
-  useEffect(() => {
-    if (initialCategories.length === 0) {
-      fetchCategories();
-    }
-  }, [initialCategories.length]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-    fetchNews(1, true);
-  }, [searchTerm, selectedCategory, selectedBusinessForm]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    fetchNews(page);
-  };
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    setCurrentPage(1);
-    fetchNews(1, true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const clearFilters = () => {
     setSearchTerm("");
     setSelectedCategory("all");
-    setSelectedBusinessForm("all");
     setCurrentPage(1);
   };
 
-  if (featured && news.length === 0 && !loading) {
+  if (featured && finalNews.length === 0 && !isLoading) {
     return null;
   }
 
@@ -120,17 +116,15 @@ export default function NewsList({ initialNews = [], initialCategories = [], fea
     <div className="space-y-6">
       {!featured && (
         <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
-          <form onSubmit={handleSearch} className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-              <Input
-                placeholder="Поиск новостей..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-          </form>
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input
+              placeholder="Поиск новостей..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
 
           <div className="flex space-x-2">
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
@@ -140,34 +134,15 @@ export default function NewsList({ initialNews = [], initialCategories = [], fea
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Все категории</SelectItem>
-                {categories.map((category) => {
-                  console.log('Category:', category);
-                  return (
-                    <SelectItem key={category.id || 'unknown'} value={(category.id || '0').toString()}>
-                      {category.name}
-                    </SelectItem>
-                  );
-                })}
+                {categories.map((cat) => (
+                  <SelectItem key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
 
-            <Select value={selectedBusinessForm} onValueChange={setSelectedBusinessForm}>
-              <SelectTrigger className="w-full md:w-40">
-                <SelectValue placeholder="Форма бизнеса" />
-              </SelectTrigger>
-              <SelectContent>
-                {businessForms.map((form) => {
-                  console.log('Business form:', form);
-                  return (
-                    <SelectItem key={form.value || 'all'} value={form.value || 'all'}>
-                      {form.label}
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
-
-            {(searchTerm || selectedCategory || selectedBusinessForm) && (
+            {(searchTerm || selectedCategory !== "all") && (
               <Button variant="outline" onClick={clearFilters}>
                 Сбросить
               </Button>
@@ -176,38 +151,32 @@ export default function NewsList({ initialNews = [], initialCategories = [], fea
         </div>
       )}
 
-      {loading ? (
+      {isLoading && finalNews.length === 0 ? (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: featured ? 3 : 6 }).map((_, index) => (
             <div key={index} className="space-y-3">
               <Skeleton className="h-6 w-3/4" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-5/6" />
               <Skeleton className="h-32 w-full" />
             </div>
           ))}
         </div>
       ) : (
         <>
-          {news.length === 0 ? (
+          {finalNews.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground text-lg">
-                {searchTerm || selectedCategory || selectedBusinessForm
-                  ? "Новостей по заданным фильтрам не найдено"
-                  : "Новостей пока нет"}
+                Новостей не найдено
               </p>
-              {(searchTerm || selectedCategory || selectedBusinessForm) && (
-                <Button variant="outline" onClick={clearFilters} className="mt-4">
-                  Сбросить фильтры
-                </Button>
-              )}
+              <Button variant="outline" onClick={clearFilters} className="mt-4">
+                Сбросить фильтры
+              </Button>
             </div>
           ) : (
             <div className={`grid gap-6 ${featured ? "md:grid-cols-1 lg:grid-cols-3" : "md:grid-cols-2 lg:grid-cols-3"}`}>
-              {news.map((newsItem) => (
-                <NewsCard 
-                  key={newsItem.id} 
-                  news={newsItem} 
+              {finalNews.map((newsItem) => (
+                <NewsCard
+                  key={newsItem.id}
+                  news={newsItem as any}
                   compact={featured}
                 />
               ))}
@@ -216,12 +185,12 @@ export default function NewsList({ initialNews = [], initialCategories = [], fea
         </>
       )}
 
-      {!featured && !loading && news.length > 0 && totalPages > 1 && (
+      {!featured && !isLoading && totalPages > 1 && (
         <div className="flex items-center justify-between">
           <div className="text-sm text-muted-foreground">
-            Показано {news.length} из {totalCount} новостей
+            {totalCount} новостей
           </div>
-          
+
           <div className="flex items-center space-x-2">
             <Button
               variant="outline"
@@ -232,36 +201,9 @@ export default function NewsList({ initialNews = [], initialCategories = [], fea
               <ChevronLeft className="w-4 h-4" />
               Назад
             </Button>
-            
-            <div className="flex items-center space-x-1">
-              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                const page = i + 1;
-                return (
-                  <Button
-                    key={page}
-                    variant={currentPage === page ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => handlePageChange(page)}
-                  >
-                    {page}
-                  </Button>
-                );
-              })}
-              
-              {totalPages > 5 && (
-                <>
-                  <span className="px-2">...</span>
-                  <Button
-                    variant={currentPage === totalPages ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => handlePageChange(totalPages)}
-                  >
-                    {totalPages}
-                  </Button>
-                </>
-              )}
-            </div>
-            
+            <span className="text-sm">
+              Страница {currentPage} из {totalPages}
+            </span>
             <Button
               variant="outline"
               size="sm"

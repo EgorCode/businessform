@@ -15,8 +15,18 @@ interface NewsCardProps {
 }
 
 export default function NewsCard({ news, compact = false }: NewsCardProps) {
-  const formatDate = (timestamp: number) => {
-    const date = new Date(timestamp * 1000);
+  const formatDate = (dateInput: number | string | null) => {
+    if (!dateInput) return "";
+
+    let date: Date;
+    // Check if it's a number (likely a unix timestamp in seconds)
+    if (typeof dateInput === 'number') {
+      date = new Date(dateInput * 1000);
+    } else {
+      // It's a string (ISO date)
+      date = new Date(dateInput);
+    }
+
     return date.toLocaleDateString('ru-RU', {
       day: 'numeric',
       month: 'long',
@@ -51,9 +61,9 @@ export default function NewsCard({ news, compact = false }: NewsCardProps) {
             {formatDate(news.publishedAt)}
           </div>
         </div>
-        
+
         <CardTitle className={`${compact ? "text-lg" : "text-xl"} leading-tight`}>
-          <Link 
+          <Link
             href={`/news/${news.id}`}
             className="hover:text-primary transition-colors"
           >
@@ -61,20 +71,20 @@ export default function NewsCard({ news, compact = false }: NewsCardProps) {
           </Link>
         </CardTitle>
       </CardHeader>
-      
+
       <CardContent className="pt-0">
         {news.summary && (
           <CardDescription className={`${compact ? "text-sm line-clamp-2" : "line-clamp-3"} mb-4`}>
             {news.summary}
           </CardDescription>
         )}
-        
+
         {news.businessForms && news.businessForms.length > 0 && (
           <div className="flex flex-wrap gap-1 mb-3">
             {news.businessForms.map((form, index) => (
-              <Badge 
-                key={index} 
-                variant="outline" 
+              <Badge
+                key={index}
+                variant="outline"
                 className={`text-xs ${getBusinessFormColor(form)}`}
               >
                 {form}
@@ -82,7 +92,7 @@ export default function NewsCard({ news, compact = false }: NewsCardProps) {
             ))}
           </div>
         )}
-        
+
         {news.tags && Array.isArray(news.tags) && news.tags.length > 0 && !compact && (
           <div className="flex flex-wrap gap-1 mb-3">
             {news.tags.slice(0, 3).map((tag: string, index: number) => (
@@ -98,19 +108,19 @@ export default function NewsCard({ news, compact = false }: NewsCardProps) {
             )}
           </div>
         )}
-        
+
         <div className="flex items-center justify-between">
-          <Link 
+          <Link
             href={`/news/${news.id}`}
             className="text-sm font-medium text-primary hover:underline"
           >
             Читать далее
           </Link>
-          
+
           {news.imageUrl && (
             <div className="w-16 h-16 rounded-md overflow-hidden flex-shrink-0 ml-2">
-              <img 
-                src={news.imageUrl} 
+              <img
+                src={news.imageUrl}
                 alt={news.title}
                 className="w-full h-full object-cover"
                 onError={(e) => {
