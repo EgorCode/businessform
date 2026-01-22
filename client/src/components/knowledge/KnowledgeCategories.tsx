@@ -577,12 +577,11 @@ export default function KnowledgeCategories({ category, searchQuery, selectedTag
     // Start with static
     let merged = [...staticArticles];
 
-    // Append Strapi if available
+    // Append Strapi if available, prioritizing static by title
     if (strapiArticles.length > 0) {
-      // Avoid duplicates if IDs conflict (simple check)
-      const staticIds = new Set(staticArticles.map(a => a.id));
-      const newItems = strapiArticles.filter(a => !staticIds.has(a.id));
-      merged = [...newItems, ...staticArticles];
+      const staticTitles = new Set(staticArticles.map(a => a.title.toLowerCase().trim()));
+      const uniqueStrapiItems = strapiArticles.filter(a => !staticTitles.has(a.title.toLowerCase().trim()));
+      merged = [...uniqueStrapiItems, ...staticArticles];
     }
 
     setLocalArticles(merged);
@@ -614,6 +613,7 @@ export default function KnowledgeCategories({ category, searchQuery, selectedTag
     if (activeTab === "popular") return article.isPopular;
     if (activeTab === "new") return article.isNew;
     if (activeTab === "favorites") return article.isFavorite;
+    if (activeTab === "author") return article.author === "Баканина Анастасия";
     return true;
   });
 
@@ -650,6 +650,10 @@ export default function KnowledgeCategories({ category, searchQuery, selectedTag
           <TabsTrigger value="new" className="gap-2" data-testid="knowledge-categories-tab">
             <Calendar className="h-4 w-4" />
             Новые
+          </TabsTrigger>
+          <TabsTrigger value="author" className="gap-2" data-testid="knowledge-categories-tab">
+            <User className="h-4 w-4" />
+            Авторские
           </TabsTrigger>
           <TabsTrigger value="favorites" className="gap-2" data-testid="knowledge-categories-tab">
             <Heart className="h-4 w-4" />

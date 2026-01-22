@@ -317,10 +317,13 @@ export default function FeaturedArticlesGrid() {
             content: typeof item.content === 'string' ? item.content : JSON.stringify(item.content),
         })) || [];
 
-        // Combine Strapi items with static items
+        // Deduplicate: Prioritize static items over Strapi items with the same title
         if (strapiItems.length > 0) {
-            console.log(`📦 [Featured] Merging ${strapiItems.length} Strapi items with static content`);
-            return [...strapiItems, ...staticArticleItems];
+            const staticTitles = new Set(staticArticleItems.map(a => a.title.toLowerCase().trim()));
+            const uniqueStrapiItems = strapiItems.filter(item => !staticTitles.has(item.title.toLowerCase().trim()));
+
+            console.log(`📦 [Featured] Merged ${uniqueStrapiItems.length} Strapi items and ${staticArticleItems.length} static items`);
+            return [...staticArticleItems, ...uniqueStrapiItems];
         }
 
         return isLoading ? [] : staticArticleItems;
