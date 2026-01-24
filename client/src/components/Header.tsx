@@ -41,7 +41,7 @@ export default function Header() {
             </Link>
             <Link href="/case-studies">
               <span className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-green-600 hover:bg-green-50 rounded-full transition-all duration-300 cursor-pointer" data-testid="link-case-studies">
-                Кейсы
+                Истории
               </span>
             </Link>
             <Link href="/calculators">
@@ -135,7 +135,7 @@ export default function Header() {
                   onClick={() => setMobileMenuOpen(false)}
                   data-testid="link-mobile-case-studies"
                 >
-                  Кейсы
+                  Истории
                   <svg className="w-4 h-4 text-slate-400 group-hover:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
