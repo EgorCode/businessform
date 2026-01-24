@@ -26,54 +26,14 @@ import {
   Calculator,
   FileText
 } from "lucide-react";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Pricing, PricingPlan } from "@/components/blocks/pricing";
+import { SubscriptionDialog } from "@/components/shared/SubscriptionDialog";
 
 export default function StartPage() {
   const [activeTab, setActiveTab] = useState("overview");
   const [isPricingOpen, setIsPricingOpen] = useState(false);
   const search = useSearch();
 
-  const pricingPlans: PricingPlan[] = [
-    {
-      name: "БЕСПЛАТНАЯ",
-      price: "0",
-      yearlyPrice: "0",
-      period: "в месяц",
-      features: [
-        "Функционал нашего сайта",
-        "Авторские материалы",
-        "Ответ поддержки за 48ч",
-        "Чат в группе Телеграмм",
-        "Хорошее настроение",
-      ],
-      description: "Идеально для знакомства с платформой",
-      buttonText: "Продолжить бесплатно",
-      isPopular: false,
-      type: 'base',
-      onClick: () => setIsPricingOpen(false)
-    },
-    {
-      name: "МАКСИМАЛЬНАЯ",
-      price: "299",
-      yearlyPrice: "239",
-      period: "в месяц",
-      features: [
-        "Все функции портала",
-        "Персональный менеджер",
-        "Ответ поддержки за 1ч",
-        "Индивидуальный менеджер в Телеграмм",
-        "Помощь в оформлении документов",
-        "Спасибо от нас",
-      ],
-      description: "Для самых лучших!",
-      buttonText: "Связаться с нами",
-      href: "#",
-      isPopular: true,
-      type: 'max',
-      onClick: () => window.open("https://t.me/+fwAIYLOHTMI5OGQy", "_blank")
-    },
-  ];
+
   const searchParams = new URLSearchParams(search);
   const showSelfEmployedWizard = searchParams.get("form") === "self-employed";
 
@@ -317,27 +277,13 @@ export default function StartPage() {
             Наша команда экспертов готова помочь вам на каждом этапе запуска бизнеса.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Dialog open={isPricingOpen} onOpenChange={setIsPricingOpen}>
-              <DialogTrigger asChild>
-                <button
-                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover-elevate active-elevate-2 bg-primary text-primary-foreground border border-primary-border min-h-10 rounded-md px-8"
-                >
-                  Получить консультацию
-                </button>
-              </DialogTrigger>
-              <DialogContent className="max-h-[95vh] max-w-4xl overflow-y-auto w-full p-0 bg-transparent border-none shadow-none sm:max-w-[900px]">
-                <div className="relative w-full rounded-xl bg-card shadow-2xl ring-1 ring-border overflow-hidden">
-                  <div className="p-2 md:p-4">
-                    <Pricing
-                      title="Выберите ваш тариф"
-                      description="Раскройте весь потенциал платформы."
-                      plans={pricingPlans}
-                      onClose={() => setIsPricingOpen(false)}
-                    />
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
+            <button
+              onClick={() => setIsPricingOpen(true)}
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover-elevate active-elevate-2 bg-primary text-primary-foreground border border-primary-border min-h-10 rounded-md px-8"
+            >
+              Получить консультацию
+            </button>
+            <SubscriptionDialog open={isPricingOpen} onOpenChange={setIsPricingOpen} />
             <Button variant="outline" size="lg" asChild>
               <a href="/knowledge">
                 <BookOpen className="mr-2 h-5 w-5" />
