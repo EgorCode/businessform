@@ -86,17 +86,15 @@ export function SubscriptionDialog({
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent
-                className="max-h-[90vh] max-w-4xl w-full p-0 bg-transparent border-none shadow-none sm:max-w-[900px]"
-                style={{ overflowY: 'auto' }}
+                className="max-h-[90vh] w-[95vw] sm:w-full max-w-4xl p-0 bg-transparent border-none shadow-none sm:max-w-[900px] flex flex-col"
             >
-                <div className="relative w-full rounded-xl bg-card shadow-2xl ring-1 ring-border overflow-hidden">
-                    <div className="p-2 md:p-4">
+                <div className="relative w-full rounded-2xl bg-card shadow-2xl ring-1 ring-border overflow-y-auto">
+                    <div className="p-4 pt-10 sm:p-6 md:p-8">
                         <Pricing
                             title={title}
                             description={description}
                             plans={finalPlans}
                             hideToggle={hideToggle}
-                        // We omit onClose to rely on the Dialog's own close button
                         />
                     </div>
                 </div>

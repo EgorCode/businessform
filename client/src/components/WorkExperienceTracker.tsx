@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SubscriptionDialog, PricingPlan } from "@/components/shared/SubscriptionDialog";
+import { InfoDialog } from "@/components/shared/InfoDialog";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
@@ -275,66 +276,58 @@ export default function WorkExperienceTracker() {
                       hideToggle={true}
                     />
 
-                    <Dialog open={isInfoOpen} onOpenChange={setIsInfoOpen}>
-                      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-                        <div className="space-y-4">
-                          <h3 className="text-xl font-bold">Условия получения больничных для самозанятых</h3>
-                          <p className="text-muted-foreground">
-                            Самозанятые могут получать оплачиваемый больничный, подключившись к эксперименту через приложение «Мой налог» (до 30.09.2027), выбрав страховую базу (35 000 или 50 000 руб.) и регулярно уплачивая 3,84% взносы, что дает право на пособие (от 70% до 100%) после 6 месяцев стажа; оформление происходит через электронный больничный, а заявление подается в СФР через «Мой налог» или Госуслуги.
-                          </p>
+                    <InfoDialog
+                      open={isInfoOpen}
+                      onOpenChange={setIsInfoOpen}
+                      title="Условия получения больничных для самозанятых"
+                    >
+                      <p className="text-muted-foreground leading-relaxed">
+                        Самозанятые могут получать оплачиваемый больничный, подключившись к эксперименту через приложение «Мой налог» (до 30.09.2027), выбрав страховую базу (35 000 или 50 000 руб.) и регулярно уплачивая 3,84% взносы, что дает право на пособие (от 70% до 100%) после 6 месяцев стажа; оформление происходит через электронный больничный, а заявление подается в СФР через «Мой налог» или Госуслуги.
+                      </p>
 
-                          <div className="space-y-2">
-                            <h4 className="font-semibold text-lg flex items-center gap-2">
-                              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold">1</span>
-                              Как подключиться (с 2026 года)
-                            </h4>
-                            <ul className="list-disc pl-10 space-y-1 text-sm text-muted-foreground">
-                              <li><span className="font-medium text-foreground">Подать заявление:</span> Через приложение «Мой налог», портал Госуслуг или в МФЦ до 30 сентября 2027 года.</li>
-                              <li><span className="font-medium text-foreground">Выбрать страховую базу:</span> 35 000 руб. (взнос 1344 руб./мес.) или 50 000 руб. (взнос 1920 руб./мес.).</li>
-                              <li><span className="font-medium text-foreground">Уплачивать взносы:</span> Ежемесячно или единовременно за год, начиная со следующего месяца после подачи заявления.</li>
-                            </ul>
-                          </div>
-
-                          <div className="space-y-2">
-                            <h4 className="font-semibold text-lg flex items-center gap-2">
-                              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold">2</span>
-                              Условия получения
-                            </h4>
-                            <ul className="list-disc pl-10 space-y-1 text-sm text-muted-foreground">
-                              <li><span className="font-medium text-foreground">Стаж:</span> Непрерывная уплата взносов не менее 6 месяцев.</li>
-                              <li><span className="font-medium text-foreground">Процесс:</span> Оформить электронный больничный лист у врача.</li>
-                              <li><span className="font-medium text-foreground">Заявление в СФР:</span> Подать заявление на выплату через «Мой налог» или Госуслуги в течение 6 месяцев после выздоровления.</li>
-                            </ul>
-                          </div>
-
-                          <div className="space-y-2">
-                            <h4 className="font-semibold text-lg flex items-center gap-2">
-                              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold">3</span>
-                              Размер пособия
-                            </h4>
-                            <ul className="list-disc pl-10 space-y-1 text-sm text-muted-foreground">
-                              <li><span className="font-medium text-foreground">До 12 месяцев стажа:</span> 70% от выбранной страховой суммы.</li>
-                              <li><span className="font-medium text-foreground">От 12 месяцев стажа и более:</span> 100% от выбранной страховой суммы.</li>
-                              <li><span className="font-medium text-foreground">Выплата:</span> Пособие перечисляется в течение 10 рабочих дней после закрытия больничного.</li>
-                            </ul>
-                          </div>
-
-                          <div className="space-y-2">
-                            <h4 className="font-semibold text-lg flex items-center gap-2">
-                              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold">4</span>
-                              Бонус
-                            </h4>
-                            <p className="pl-10 text-sm text-muted-foreground">
-                              За длительное участие в программе без выплат (18 и 24 месяца) предусмотрено снижение взноса на 10% и 30% соответственно.
-                            </p>
-                          </div>
-
-                          <div className="pt-4 flex justify-end">
-                            <Button onClick={() => setIsInfoOpen(false)}>Понятно</Button>
-                          </div>
+                      <div className="space-y-4">
+                        <div className="space-y-3">
+                          <h4 className="font-bold text-lg flex items-center gap-2">
+                            <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-primary text-primary-foreground text-xs font-bold shadow-sm">1</span>
+                            Как подключиться (с 2026 года)
+                          </h4>
+                          <ul className="space-y-2 ml-9">
+                            <li className="text-sm text-muted-foreground"><span className="font-semibold text-foreground">Подать заявление:</span> Через приложение «Мой налог», портал Госуслуг или в МФЦ до 30 сентября 2027 года.</li>
+                            <li className="text-sm text-muted-foreground"><span className="font-semibold text-foreground">Выбрать страховую базу:</span> 35 000 руб. (взнос 1344 руб./мес.) или 50 000 руб. (взнос 1920 руб./мес.).</li>
+                            <li className="text-sm text-muted-foreground"><span className="font-semibold text-foreground">Уплачивать взносы:</span> Ежемесячно или единовременно за год.</li>
+                          </ul>
                         </div>
-                      </DialogContent>
-                    </Dialog>
+
+                        <div className="space-y-3">
+                          <h4 className="font-bold text-lg flex items-center gap-2">
+                            <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-primary text-primary-foreground text-xs font-bold shadow-sm">2</span>
+                            Условия получения
+                          </h4>
+                          <ul className="space-y-2 ml-9">
+                            <li className="text-sm text-muted-foreground"><span className="font-semibold text-foreground">Стаж:</span> Непрерывная уплата взносов не менее 6 месяцев.</li>
+                            <li className="text-sm text-muted-foreground"><span className="font-semibold text-foreground">Процесс:</span> Оформить электронный больничный лист у врача.</li>
+                          </ul>
+                        </div>
+
+                        <div className="space-y-3">
+                          <h4 className="font-bold text-lg flex items-center gap-2">
+                            <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-primary text-primary-foreground text-xs font-bold shadow-sm">3</span>
+                            Размер пособия
+                          </h4>
+                          <ul className="space-y-2 ml-9">
+                            <li className="text-sm text-muted-foreground"><span className="font-semibold text-foreground">До 12 месяцев стажа:</span> 70% от выбранной страховой суммы.</li>
+                            <li className="text-sm text-muted-foreground"><span className="font-semibold text-foreground">От 12 месяцев стажа:</span> 100% от выбранной страховой суммы.</li>
+                          </ul>
+                        </div>
+
+                        <div className="bg-primary/5 rounded-xl p-4 border border-primary/10">
+                          <h4 className="font-bold text-primary mb-1">💡 Бонус за участие</h4>
+                          <p className="text-sm text-muted-foreground">
+                            За длительное участие в программе без выплат (18 и 24 месяца) предусмотрено снижение взноса на 10% и 30% соответственно.
+                          </p>
+                        </div>
+                      </div>
+                    </InfoDialog>
                   </div>
                 </TabsContent>
 
