@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "wouter";
 import PageLayout from "@/components/layout/PageLayout";
 import PageHeader from "@/components/layout/PageHeader";
 import PageSection from "@/components/layout/PageSection";
@@ -16,8 +17,8 @@ export default function ComparisonPage() {
   return (
     <PageLayout>
       {/* Заголовок страницы с breadcrumbs */}
-      <PageHeader 
-        title="Сравнение форм бизнеса" 
+      <PageHeader
+        title="Сравнение форм бизнеса"
         description="Подробное сравнение ООО, ИП и самозанятости. Выберите оптимальную форму для вашего бизнеса."
         breadcrumbs={[{ label: "Сравнение форм" }]}
       />
@@ -38,7 +39,7 @@ export default function ComparisonPage() {
           <TabsContent value="overview" className="mt-6">
             <div className="space-y-8">
               <ComparisonTable />
-              
+
               {/* Краткие характеристики каждой формы */}
               <div className="grid gap-6 md:grid-cols-3">
                 <Card>
@@ -554,7 +555,7 @@ export default function ComparisonPage() {
             <CardHeader>
               <CardTitle className="text-lg">Выбирайте ООО, если:</CardTitle>
             </CardHeader>
-              <CardContent>
+            <CardContent>
               <ul className="space-y-3 text-sm">
                 <li className="flex items-start gap-2">
                   <Check className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
@@ -642,9 +643,11 @@ export default function ComparisonPage() {
         </div>
 
         <div className="mt-12 text-center">
-          <Button size="lg" className="mx-auto">
-            Пройти тест для выбора формы
-          </Button>
+          <Link href="/wizard">
+            <Button size="lg" className="mx-auto">
+              Мастер подбора бизнеса
+            </Button>
+          </Link>
         </div>
       </PageSection>
 

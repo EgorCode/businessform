@@ -24,7 +24,7 @@ export function WizardDialog({ children }: WizardDialogProps) {
                 <SelfEmploymentWizard
                     embedded={true}
                     // onClose={() => setOpen(false)} - убираем дублирующую кнопку закрытия
-                    className="h-full border-none shadow-none"
+                    className="h-full border-none shadow-none bg-background"
                 />
             </DialogContent>
         </Dialog>

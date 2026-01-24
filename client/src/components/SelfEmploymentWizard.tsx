@@ -78,7 +78,7 @@ const wizardSteps: WizardStep[] = [
             {
                 id: "other",
                 label: "Другое",
-                description: "Расскажите подробнее в чате",
+                description: "Расскажите подробнее в тг-чате",
                 icon: HelpCircle
             }
         ]
@@ -170,6 +170,12 @@ export default function SelfEmploymentWizard({ onComplete, onClose, isCompact = 
     const currentStepData = wizardSteps[currentStep];
 
     const handleOptionSelect = useCallback((option: WizardOption) => {
+        // Специальная обработка для опции "Другое" -> переход в ТГ
+        if (option.id === "other") {
+            window.open("https://t.me/+hXZ2a1ltQORiYWZi", "_blank");
+            return;
+        }
+
         const answer: WizardAnswer = {
             step: currentStep,
             questionId: currentStepData.id,
@@ -374,10 +380,12 @@ export default function SelfEmploymentWizard({ onComplete, onClose, isCompact = 
                         </Button>
                         <Button
                             className={`flex-1 gap-2 ${isCompact ? "h-8 text-xs" : ""}`}
-                            onClick={() => window.location.href = '/start?form=self-employed'}
+                            asChild
                         >
-                            Регистрация
-                            <ArrowRight className="h-3 w-3" />
+                            <a href="/start?form=self-employed">
+                                Регистрация
+                                <ArrowRight className="h-3 w-3" />
+                            </a>
                         </Button>
                     </div>
                 </div>

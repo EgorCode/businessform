@@ -11,7 +11,9 @@ import SalaryCalculator from "@/components/calculators/SalaryCalculator";
 import ProfitabilityCalculator from "@/components/calculators/ProfitabilityCalculator";
 import InsuranceContributionsCalculator from "@/components/calculators/InsuranceContributionsCalculator";
 import RegistrationCostCalculator from "@/components/calculators/RegistrationCostCalculator";
-import { Calculator, DollarSign, TrendingUp, Shield, FileText } from "lucide-react";
+import SocialInsuranceExpanded from "@/components/calculators/SocialInsuranceExpanded";
+import { Calculator, DollarSign, TrendingUp, FileText } from "lucide-react";
+import { Pricing, PricingPlan } from "@/components/blocks/pricing";
 
 interface CalculatorItem {
   id: string;
@@ -24,6 +26,48 @@ interface CalculatorItem {
 
 export default function CalculatorsPage() {
   const [openCalculator, setOpenCalculator] = useState<string | null>(null);
+  const [isPricingOpen, setIsPricingOpen] = useState(false);
+
+  const pricingPlans: PricingPlan[] = [
+    {
+      name: "БЕСПЛАТНАЯ",
+      price: "0",
+      yearlyPrice: "0",
+      period: "в месяц",
+      features: [
+        "Функционал нашего сайта",
+        "Авторские материалы",
+        "Ответ поддержки за 48ч",
+        "Чат в группе Телеграмм",
+        "Хорошее настроение",
+      ],
+      description: "Идеально для знакомства с платформой",
+      buttonText: "Продолжить бесплатно",
+      isPopular: false,
+      type: 'base',
+      onClick: () => setIsPricingOpen(false)
+    },
+    {
+      name: "МАКСИМАЛЬНАЯ",
+      price: "299",
+      yearlyPrice: "239",
+      period: "в месяц",
+      features: [
+        "Все функции портала",
+        "Персональный менеджер",
+        "Ответ поддержки за 1ч",
+        "Индивидуальный менеджер в Телеграмм",
+        "Помощь в оформлении документов",
+        "Спасибо от нас",
+      ],
+      description: "Для самых лучших!",
+      buttonText: "Связаться с нами",
+      href: "#",
+      isPopular: true,
+      type: 'max',
+      onClick: () => window.open("https://t.me/+fwAIYLOHTMI5OGQy", "_blank")
+    },
+  ];
 
   const calculators: CalculatorItem[] = [
     {
@@ -48,13 +92,7 @@ export default function CalculatorsPage() {
       icon: <TrendingUp className="h-6 w-6" />,
       component: <ProfitabilityCalculator />
     },
-    {
-      id: "insurance",
-      title: "Калькулятор страховых взносов",
-      description: "Расчет страховых взносов для ИП и самозанятых",
-      icon: <Shield className="h-6 w-6" />,
-      component: <InsuranceContributionsCalculator />
-    },
+
     {
       id: "registration",
       title: "Калькулятор стоимости регистрации",
@@ -117,13 +155,35 @@ export default function CalculatorsPage() {
         </div>
       </PageSection>
 
-      <PageSection size="md" background="muted">
+      <PageSection size="lg">
+        <SocialInsuranceExpanded />
+      </PageSection>
+
+      <PageSection size="md">
         <div className="text-center">
           <h2 className="mb-4 text-2xl font-semibold">Нужна помощь с расчетами?</h2>
           <p className="mb-6 text-muted-foreground max-w-2xl mx-auto">
             Наши эксперты помогут с выбором оптимальной системы налогообложения и расчетом всех необходимых показателей для вашего бизнеса.
           </p>
-          <Button size="lg">Получить консультацию</Button>
+          <Dialog open={isPricingOpen} onOpenChange={setIsPricingOpen}>
+            <DialogTrigger asChild>
+              <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover-elevate active-elevate-2 bg-primary text-primary-foreground border border-primary-border min-h-10 rounded-md px-8">
+                Получить консультацию
+              </button>
+            </DialogTrigger>
+            <DialogContent className="max-h-[95vh] max-w-4xl overflow-y-auto w-full p-0 bg-transparent border-none shadow-none sm:max-w-[900px]">
+              <div className="relative w-full rounded-xl bg-card shadow-2xl ring-1 ring-border overflow-hidden">
+                <div className="p-2 md:p-4">
+                  <Pricing
+                    title="Выберите ваш тариф"
+                    description="Раскройте весь потенциал платформы."
+                    plans={pricingPlans}
+                    onClose={() => setIsPricingOpen(false)}
+                  />
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </PageSection>
     </PageLayout>

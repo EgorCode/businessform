@@ -59,9 +59,9 @@ export default function NewHero() {
               </Badge>
 
               <h1 className="text-5xl font-bold leading-tight tracking-tight lg:text-6xl xl:text-7xl" data-testid="text-new-hero-title">
-                Станьте самозанятым
+                Стать самозанятым
                 <span className="block bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">
-                  за 5 минут
+                  легко...
                 </span>
               </h1>
 
@@ -74,13 +74,15 @@ export default function NewHero() {
 
 
             <div className="flex flex-col gap-4 sm:flex-row">
-              <WizardDialog>
-                <Button size="lg" className="gap-2 text-base bg-green-600 hover:bg-green-700" data-testid="button-start-journey">
-                  <Sparkles className="h-5 w-5" />
-                  Пройти тест за 2 минуты
-                  <ArrowRight className="h-5 w-5" />
-                </Button>
-              </WizardDialog>
+              <Button
+                size="lg"
+                className="gap-2 text-base"
+                data-testid="button-start-journey"
+                onClick={() => setLocation("/wizard")}
+              >
+                Неуверен? Пройди опрос
+                <ArrowRight className="h-5 w-5" />
+              </Button>
 
             </div>
 

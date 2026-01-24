@@ -23,7 +23,7 @@ import AdminNewsPage from "@/pages/AdminNewsPage";
 import AdminLogin from "@/pages/AdminLogin";
 import AdminDashboard from "@/pages/AdminDashboard";
 import ScrollbarDemo from "@/components/ScrollbarDemo";
-import ScrollTestPage from "@/components/ScrollTestPage";
+
 import CaseStudiesPage from "@/pages/CaseStudiesPage";
 import AboutPage from "@/pages/AboutPage";
 import FAQPage from "@/pages/FAQPage";
@@ -51,7 +51,7 @@ function Router() {
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin/dashboard" component={AdminDashboard} />
       <Route path="/scrollbar-demo" component={ScrollbarDemo} />
-      <Route path="/scroll-test" component={ScrollTestPage} />
+
       <Route path="/about" component={AboutPage} />
       <Route path="/faq" component={FAQPage} />
       <Route component={NotFound} />
@@ -64,7 +64,10 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <AIAssistantProvider>
-          <Router />
+          <div className="fixed inset-0 bg-gradient-to-br from-green-500/5 to-emerald-500/5 z-0 pointer-events-none" />
+          <div className="relative z-10">
+            <Router />
+          </div>
           <EnhancedAIAssistantWrapper />
           <Toaster />
         </AIAssistantProvider>

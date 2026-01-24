@@ -51,11 +51,11 @@ export default function KnowledgePage() {
           <div className="overflow-x-auto -mx-4 px-6 sm:mx-0 sm:px-2 py-2">
             <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 min-w-max sm:min-w-0 gap-1 sm:gap-2 h-auto p-2">
               <TabsTrigger value="all" className="whitespace-nowrap text-xs sm:text-xs md:text-sm px-2 sm:px-3 py-2 h-auto">Все статьи</TabsTrigger>
-              <TabsTrigger value="starting" className="whitespace-nowrap text-xs sm:text-xs md:text-sm px-2 sm:px-3 py-2 h-auto">Начало</TabsTrigger>
+              <TabsTrigger value="starting" className="whitespace-nowrap text-xs sm:text-xs md:text-sm px-2 sm:px-3 py-2 h-auto">Старт бизнеса</TabsTrigger>
               <TabsTrigger value="taxes" className="whitespace-nowrap text-xs sm:text-xs md:text-sm px-2 sm:px-3 py-2 h-auto">Налоги</TabsTrigger>
               <TabsTrigger value="hr" className="whitespace-nowrap text-xs sm:text-xs md:text-sm px-2 sm:px-3 py-2 h-auto">Кадры</TabsTrigger>
               <TabsTrigger value="marketing" className="whitespace-nowrap text-xs sm:text-xs md:text-sm px-2 sm:px-3 py-2 h-auto">Маркетинг</TabsTrigger>
-              <TabsTrigger value="legal" className="whitespace-nowrap text-xs sm:text-xs md:text-sm px-2 sm:px-3 py-2 h-auto">Юридия</TabsTrigger>
+              <TabsTrigger value="legal" className="whitespace-nowrap text-xs sm:text-xs md:text-sm px-2 sm:px-3 py-2 h-auto">Право</TabsTrigger>
               <TabsTrigger value="finance" className="whitespace-nowrap text-xs sm:text-xs md:text-sm px-2 sm:px-3 py-2 h-auto">Финансы</TabsTrigger>
             </TabsList>
           </div>

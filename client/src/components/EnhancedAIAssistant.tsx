@@ -10,6 +10,8 @@ import { aiService, AIMessage } from "@/services/aiService";
 import { useAIAssistant } from "@/contexts/AIAssistantContext";
 import { useScrollDetection } from '@/hooks/useScrollDetection';
 import { cn } from '@/lib/utils';
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Pricing, PricingPlan } from "@/components/blocks/pricing";
 
 
 
@@ -54,6 +56,48 @@ export default function EnhancedAIAssistant({ isMinimized = false, onToggle }: E
   const [activeTab, setActiveTab] = useState("chat");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { isScrolling, elementRef, scrollToBottom } = useScrollDetection();
+  const [isPricingOpen, setIsPricingOpen] = useState(false);
+
+  const pricingPlans: PricingPlan[] = [
+    {
+      name: "БЕСПЛАТНАЯ",
+      price: "0",
+      yearlyPrice: "0",
+      period: "в месяц",
+      features: [
+        "Функционал нашего сайта",
+        "Авторские материалы",
+        "Ответ поддержки за 48ч",
+        "Чат в группе Телеграмм",
+        "Хорошее настроение",
+      ],
+      description: "Идеально для знакомства с платформой",
+      buttonText: "Продолжить бесплатно",
+      isPopular: false,
+      type: 'base',
+      onClick: () => setIsPricingOpen(false)
+    },
+    {
+      name: "МАКСИМАЛЬНАЯ",
+      price: "299",
+      yearlyPrice: "239",
+      period: "в месяц",
+      features: [
+        "Все функции портала",
+        "Персональный менеджер",
+        "Ответ поддержки за 1ч",
+        "Индивидуальный менеджер в Телеграмм",
+        "Помощь в оформлении документов",
+        "Спасибо от нас",
+      ],
+      description: "Для самых лучших!",
+      buttonText: "Связаться с нами",
+      href: "#",
+      isPopular: true,
+      type: 'max',
+      onClick: () => window.open("https://t.me/+fwAIYLOHTMI5OGQy", "_blank")
+    },
+  ];
 
   // Используем глобальный toggleMinimized если onToggle не передан
   const handleToggle = useCallback(() => {
@@ -362,19 +406,34 @@ export default function EnhancedAIAssistant({ isMinimized = false, onToggle }: E
                 </div>
               </Button>
 
-              <Button
-                variant="outline"
-                className="justify-start gap-3 h-auto p-3"
-                onClick={handleFileUpload}
-              >
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-500/10">
-                  <Upload className="h-4 w-4 text-purple-600" />
-                </div>
-                <div className="text-left">
-                  <div className="font-medium">Загрузить документы</div>
-                  <div className="text-xs text-muted-foreground">Анализ договоров и выписок</div>
-                </div>
-              </Button>
+              <Dialog open={isPricingOpen} onOpenChange={setIsPricingOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="justify-start gap-3 h-auto p-3"
+                  >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-500/10">
+                      <Upload className="h-4 w-4 text-purple-600" />
+                    </div>
+                    <div className="text-left">
+                      <div className="font-medium">Загрузить документы</div>
+                      <div className="text-xs text-muted-foreground">Анализ договоров и выписок</div>
+                    </div>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-h-[95vh] max-w-4xl overflow-y-auto w-full p-0 bg-transparent border-none shadow-none sm:max-w-[900px]">
+                  <div className="relative w-full rounded-xl bg-card shadow-2xl ring-1 ring-border overflow-hidden">
+                    <div className="p-2 md:p-4">
+                      <Pricing
+                        title="Выберите ваш тариф"
+                        description="Раскройте весь потенциал платформы."
+                        plans={pricingPlans}
+                        onClose={() => setIsPricingOpen(false)}
+                      />
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
           </TabsContent>
         </Tabs>

@@ -142,7 +142,7 @@ export default function SelfEmploymentRegistration() {
   ];
 
   return (
-    <section className="border-b py-20">
+    <section id="registration-section" className="border-b py-20" style={{ scrollMarginTop: '100px' }}>
       <div className="mx-auto max-w-7xl px-4">
         <div className="mb-12 text-center">
           <Badge variant="outline" className="mb-4 bg-green-500/10">
@@ -162,7 +162,7 @@ export default function SelfEmploymentRegistration() {
           {registrationSteps.map((step) => {
             const Icon = step.icon;
             return (
-              <Card key={step.number} className="relative border-2 transition-all hover-elevate">
+              <Card key={step.number} className="relative border-2 transition-all hover-elevate bg-card/50 backdrop-blur-sm">
                 <div className="absolute -left-4 -top-4 flex h-12 w-12 items-center justify-center rounded-full border-4 border-background bg-primary text-xl font-bold text-primary-foreground">
                   {step.number}
                 </div>
@@ -195,7 +195,7 @@ export default function SelfEmploymentRegistration() {
         </div>
 
         {/* Выбор банка */}
-        <Card className="mb-12">
+        <Card className="mb-12 bg-card/50 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Smartphone className="h-5 w-5 text-primary" />
@@ -209,7 +209,7 @@ export default function SelfEmploymentRegistration() {
             {banks.map((bank) => {
               const BankIcon = bank.icon;
               return (
-                <Card key={bank.name} className={`border transition-all hover-elevate ${bank.recommended ? "border-green-500/50 bg-green-500/5" : ""}`}>
+                <Card key={bank.name} className={`border transition-all hover-elevate ${bank.recommended ? "border-green-500/50 bg-green-500/5" : "bg-card/50 backdrop-blur-sm"}`}>
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
@@ -257,7 +257,7 @@ export default function SelfEmploymentRegistration() {
         {/* Важная информация */}
         <div className="grid gap-6 md:grid-cols-3">
           {importantNotes.map((note, idx) => (
-            <Card key={idx} className="border">
+            <Card key={idx} className="border bg-card/50 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-lg">{note.title}</CardTitle>
               </CardHeader>

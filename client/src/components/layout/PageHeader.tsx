@@ -22,11 +22,11 @@ interface PageHeaderProps {
   children?: ReactNode;
 }
 
-export default function PageHeader({ 
-  title, 
-  description, 
-  breadcrumbs = [], 
-  children 
+export default function PageHeader({
+  title,
+  description,
+  breadcrumbs = [],
+  children
 }: PageHeaderProps) {
   const defaultBreadcrumbs: BreadcrumbItem[] = [
     { label: "Главная", href: "/" },
@@ -34,7 +34,7 @@ export default function PageHeader({
   ];
 
   return (
-    <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <div className="border-b bg-transparent">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Breadcrumbs */}
         {defaultBreadcrumbs.length > 1 && (

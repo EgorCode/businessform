@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import NewHero from "@/components/NewHero";
 import ArchetypeSelector from "@/components/ArchetypeSelector";
@@ -18,6 +18,39 @@ export default function NewHome() {
   const [showArchetypeSelector, setShowArchetypeSelector] = useState(false);
   const [selectedArchetype, setSelectedArchetype] = useState<string | null>(null);
   const [isChatMinimized, setIsChatMinimized] = useState(true);
+
+  useEffect(() => {
+    const handleHashScroll = () => {
+      const hash = window.location.hash;
+      if (hash) {
+        const id = hash.replace('#', '');
+
+        // Функция попытки скролла
+        const attemptScroll = (attempts = 0) => {
+          const element = document.getElementById(id);
+          if (element) {
+            // Небольшая задержка, чтобы убедиться, что элементы выше (новости и т.д.) заняли свое место
+            setTimeout(() => {
+              element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+          } else if (attempts < 10) {
+            // Если элемента еще нет, пробуем снова через 100мс
+            setTimeout(() => attemptScroll(attempts + 1), 100);
+          }
+        };
+
+        attemptScroll();
+      }
+    };
+
+    // Запускаем при монтировании
+    setTimeout(handleHashScroll, 300);
+    setTimeout(handleHashScroll, 1500); // Резервная попытка после полной загрузки страницы
+
+    // Слушаем изменения хэша
+    window.addEventListener('hashchange', handleHashScroll);
+    return () => window.removeEventListener('hashchange', handleHashScroll);
+  }, []);
 
   const handleArchetypeSelect = (archetypeId: string) => {
     setSelectedArchetype(archetypeId);
@@ -43,14 +76,14 @@ export default function NewHome() {
       <main>
         <NewHero />
         <NewsFeed />
-        <FeaturedArticles />
         <IdeaGenerator />
         <section id="testimonials">
           <TestimonialsSplit />
         </section>
 
-        <WorkExperienceTracker />
         <SelfEmploymentRegistration />
+        <WorkExperienceTracker />
+        <FeaturedArticles />
         <SocialInsuranceGuide />
 
 

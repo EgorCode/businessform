@@ -59,13 +59,13 @@ export default function NewsPage() {
 
       {/* Featured News Section */}
       {featuredNews.length > 0 && (
-        <PageSection size="lg" background="muted">
+        <PageSection size="lg">
           <div className="space-y-6">
             <div className="flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-primary" />
               <h2 className="text-2xl font-semibold">Актуальные новости</h2>
             </div>
-            
+
             <NewsList
               initialNews={featuredNews}
               initialCategories={categories}
@@ -79,7 +79,7 @@ export default function NewsPage() {
       <PageSection size="lg">
         <div className="space-y-6">
           <h2 className="text-2xl font-semibold">Все новости</h2>
-          
+
           <NewsList
             initialNews={[]}
             initialCategories={categories}

@@ -5,7 +5,7 @@ import { useAIAssistant } from "@/contexts/AIAssistantContext";
 import ArchetypeSelector from "@/components/ArchetypeSelector";
 import IdeaGenerator from "@/components/IdeaGenerator";
 import BloggerCaseStudy from "@/components/BloggerCaseStudy";
-import StressTestSimulator from "@/components/StressTestSimulator";
+
 import TaxCalculator from "@/components/TaxCalculator";
 import WorkExperienceTracker from "@/components/WorkExperienceTracker";
 import SelfEmploymentRegistration from "@/components/SelfEmploymentRegistration";
@@ -55,14 +55,14 @@ export default function AIHome() {
           onStartChat={handleStartChat}
           onStartWizard={handleStartWizard}
         />
-        
+
         <NewsHighlight limit={3} />
-        
+
         <IdeaGenerator />
         <section id="case-study">
           <BloggerCaseStudy />
         </section>
-        <StressTestSimulator />
+
         <TaxCalculator />
         <WorkExperienceTracker />
         <SelfEmploymentRegistration />

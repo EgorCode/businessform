@@ -12,7 +12,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { HelpCircle, AlertTriangle, TrendingUp, Users, Clock, DollarSign, FileText, Shield } from "lucide-react";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Pricing, PricingPlan } from "@/components/blocks/pricing";
+import { HelpCircle, AlertTriangle, TrendingUp, Users, Clock, DollarSign, FileText, Shield, X } from "lucide-react";
 
 interface FAQScenario {
   id: string;
@@ -34,8 +36,53 @@ const categoryIcons: Record<string, any> = {
   dictionary: HelpCircle,
 };
 
+
+
 export default function PracticalFAQ() {
   const { settings } = useSiteSettings();
+  const [isPricingOpen, setIsPricingOpen] = useState(false);
+
+  const pricingPlans: PricingPlan[] = [
+    {
+      name: "БЕСПЛАТНАЯ",
+      price: "0",
+      yearlyPrice: "0",
+      period: "в месяц",
+      features: [
+        "Функционал нашего сайта",
+        "Авторские материалы",
+        "Ответ поддержки за 48ч",
+        "Чат в группе Телеграмм",
+        "Хорошее настроение",
+      ],
+      description: "Идеально для знакомства с платформой",
+      buttonText: "Продолжить бесплатно",
+      isPopular: false,
+      type: 'base',
+      onClick: () => setIsPricingOpen(false)
+    },
+    {
+      name: "МАКСИМАЛЬНАЯ",
+      price: "299",
+      yearlyPrice: "239",
+      period: "в месяц",
+      features: [
+        "Все функции портала",
+        "Персональный менеджер",
+        "Ответ поддержки за 1ч",
+        "Индивидуальный менеджер в Телеграмм",
+        "Помощь в оформлении документов",
+        "Спасибо от нас",
+      ],
+      description: "Для самых лучших!",
+      buttonText: "Связаться с нами",
+      href: "#",
+      isPopular: true,
+      type: 'max',
+      onClick: () => window.open("https://t.me/+fwAIYLOHTMI5OGQy", "_blank")
+    },
+  ];
+
   const staticScenarios: FAQScenario[] = [
     {
       id: "exceed-npd-limit",
@@ -232,7 +279,7 @@ export default function PracticalFAQ() {
   }
 
   return (
-    <section className="bg-background py-20">
+    <section className="bg-transparent py-20">
       <div className="mx-auto max-w-7xl px-4">
         <div className="mb-12 text-center">
           <Badge variant="outline" className="mb-4 bg-purple-500/10">
@@ -391,10 +438,33 @@ export default function PracticalFAQ() {
                 Первичная консультация обычно бесплатна.
               </p>
             </div>
-            <Button size="lg" variant="outline" className="gap-2 border-primary/30" data-testid="button-more-help">
-              Получить консультацию
-              <HelpCircle className="h-4 w-4" />
-            </Button>
+            <Dialog open={isPricingOpen} onOpenChange={setIsPricingOpen}>
+              <DialogTrigger asChild>
+                <button
+                  className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover-elevate active-elevate-2 border [border-color:var(--button-outline)] shadow-xs active:shadow-none min-h-10 rounded-md px-8 gap-2 border-primary/30"
+                  data-testid="button-more-help"
+                >
+                  Получить консультацию
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-circle-help h-4 w-4">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <path d="M12 17h.01"></path>
+                  </svg>
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-h-[95vh] max-w-4xl overflow-y-auto w-full p-0 bg-transparent border-none shadow-none sm:max-w-[900px]">
+                <div className="relative w-full rounded-xl bg-card shadow-2xl ring-1 ring-border overflow-hidden">
+                  <div className="p-2 md:p-4">
+                    <Pricing
+                      title="Выберите ваш тариф"
+                      description="Раскройте весь потенциал платформы."
+                      plans={pricingPlans}
+                      onClose={() => setIsPricingOpen(false)}
+                    />
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
           </CardContent>
         </Card>
       </div>

@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,6 +9,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Pricing } from "@/components/blocks/pricing";
+import { useToast } from "@/hooks/use-toast";
 
 interface TimelineEvent {
   year: number;
@@ -21,6 +23,17 @@ export default function WorkExperienceTracker() {
   const [monthsAsNPD, setMonthsAsNPD] = useState("12");
   const [monthsAsIP, setMonthsAsIP] = useState("0");
   const [voluntaryContributions, setVoluntaryContributions] = useState(false);
+  const [isPricingOpen, setIsPricingOpen] = useState(false);
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const { toast } = useToast();
+
+  const handleTariffSelect = (type: 'base' | 'max') => {
+    setIsInfoOpen(true);
+    // setIsPricingOpen(false); // Optional: keep pricing open or close it? User didn't specify, but usually one modal replaces another or stacks. Let's keep pricing open behind or close it. Let's close it to focus on info.
+    // Actually, stacking might be better if they want to go back, but standard is close.
+    // Let's close pricing for now to avoid z-index hell, or better yet, maybe the user wants just a message.
+    // "А при выборе любового тарифа при нажатии на кнопки выводить такое сообщение" -> implies a new view/modal.
+  };
 
   const calculateExperience = () => {
     const npd = parseInt(monthsAsNPD) || 0;
@@ -207,102 +220,125 @@ export default function WorkExperienceTracker() {
                       </ul>
                     </div>
 
-                    <Dialog>
+                    <Dialog open={isPricingOpen} onOpenChange={setIsPricingOpen}>
                       <DialogTrigger asChild>
                         <Button variant="outline" className="w-full gap-2 border-blue-200 bg-blue-50/50 text-blue-700 hover:bg-blue-100 hover:text-blue-800 dark:border-blue-900/30 dark:bg-blue-900/20 dark:text-blue-300">
                           <ShieldCheck className="h-4 w-4" />
                           Новые больничные 2026
                         </Button>
                       </DialogTrigger>
-                      <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto sm:max-w-[900px]">
-                        <DialogHeader>
-                          <DialogTitle className="flex items-center gap-2 text-2xl font-bold">
-                            <ShieldCheck className="h-6 w-6 text-blue-600" />
-                            Страхование на случай болезни (2026)
-                          </DialogTitle>
-                          <DialogDescription>
-                            Добровольная программа государственного страхования для плательщиков НПД
-                          </DialogDescription>
-                        </DialogHeader>
+                      <DialogContent className="max-h-[95vh] max-w-4xl overflow-y-auto w-full p-0 bg-transparent border-none shadow-none sm:max-w-[900px]">
+                        <div className="relative w-full rounded-xl bg-card shadow-2xl ring-1 ring-border overflow-hidden">
+                          <div className="p-2 md:p-4">
+                            <Pricing
+                              title="Страхование на случай болезни (2026)"
+                              description={`С 2026 года самозанятые могут добровольно страховаться в СФР.\nПраво на выплаты появляется через 6 месяцев непрерывной уплаты взносов.\nОформить можно в приложении «Мой налог» (эксперимент до 2028 года).`}
+                              hideToggle={true}
+                              plans={[
+                                {
+                                  name: "БАЗОВЫЙ",
+                                  price: "1344",
+                                  yearlyPrice: "16128",
+                                  period: "в месяц",
+                                  features: [
+                                    "Страховая сумма: 35 000 ₽",
+                                    "Стаж 6-12 мес: 70% выплаты",
+                                    "Стаж 12+ мес: 100% выплаты",
+                                    "Период ожидания: 6 месяцев",
+                                    "Не включает декретные выплаты"
+                                  ],
+                                  description: "Взнос ~1344 ₽/мес",
+                                  buttonText: "Выбрать базовый",
+                                  isPopular: false,
+                                  type: 'base',
+                                  onClick: (plan) => {
+                                    if (plan.type) handleTariffSelect(plan.type);
+                                  }
+                                },
+                                {
+                                  name: "МАКСИМУМ",
+                                  price: "1920",
+                                  yearlyPrice: "23040",
+                                  period: "в месяц",
+                                  features: [
+                                    "Страховая сумма: 50 000 ₽",
+                                    "Стаж 6-12 мес: 70% выплаты",
+                                    "Стаж 12+ мес: 100% выплаты",
+                                    "Период ожидания: 6 месяцев",
+                                    "Не включает декретные выплаты"
+                                  ],
+                                  description: "Взнос ~1920 ₽/мес",
+                                  buttonText: "Выбрать максимум",
+                                  isPopular: true,
+                                  type: 'max',
+                                  onClick: (plan) => {
+                                    if (plan.type) handleTariffSelect(plan.type);
+                                  }
+                                }
+                              ]}
+                              onClose={() => setIsPricingOpen(false)}
+                            />
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
 
-                        <div className="space-y-6 py-4">
-                          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 p-6 text-white shadow-lg md:p-8">
-                            <div className="relative z-10 max-w-xl">
-                              <h3 className="mb-2 text-2xl font-bold">Больничные для самозанятых</h3>
-                              <p className="text-blue-100 opacity-90">
-                                С 1 января 2026 года вы можете официально получать выплаты по болезни.
-                                Достаточно выбрать тариф и полгода платить взносы.
-                              </p>
-                            </div>
-                            <ShieldCheck className="absolute -bottom-8 -right-8 h-48 w-48 rotate-12 text-white/10" />
+                    <Dialog open={isInfoOpen} onOpenChange={setIsInfoOpen}>
+                      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                        <div className="space-y-4">
+                          <h3 className="text-xl font-bold">Условия получения больничных для самозанятых</h3>
+                          <p className="text-muted-foreground">
+                            Самозанятые могут получать оплачиваемый больничный, подключившись к эксперименту через приложение «Мой налог» (до 30.09.2027), выбрав страховую базу (35 000 или 50 000 руб.) и регулярно уплачивая 3,84% взносы, что дает право на пособие (от 70% до 100%) после 6 месяцев стажа; оформление происходит через электронный больничный, а заявление подается в СФР через «Мой налог» или Госуслуги.
+                          </p>
+
+                          <div className="space-y-2">
+                            <h4 className="font-semibold text-lg flex items-center gap-2">
+                              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold">1</span>
+                              Как подключиться (с 2026 года)
+                            </h4>
+                            <ul className="list-disc pl-10 space-y-1 text-sm text-muted-foreground">
+                              <li><span className="font-medium text-foreground">Подать заявление:</span> Через приложение «Мой налог», портал Госуслуг или в МФЦ до 30 сентября 2027 года.</li>
+                              <li><span className="font-medium text-foreground">Выбрать страховую базу:</span> 35 000 руб. (взнос 1344 руб./мес.) или 50 000 руб. (взнос 1920 руб./мес.).</li>
+                              <li><span className="font-medium text-foreground">Уплачивать взносы:</span> Ежемесячно или единовременно за год, начиная со следующего месяца после подачи заявления.</li>
+                            </ul>
                           </div>
 
-                          <div className="grid gap-6 md:grid-cols-2">
-                            <div className="group flex flex-col rounded-2xl border bg-card p-6 shadow-sm transition-all hover:shadow-md">
-                              <div className="mb-4 flex items-center gap-4">
-                                <div className="rounded-xl bg-orange-50 p-3 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400">
-                                  <CreditCard className="h-6 w-6" />
-                                </div>
-                                <h4 className="text-xl font-bold">Тариф «Базовый»</h4>
-                              </div>
-                              <div className="mb-6 flex-1 space-y-3">
-                                <div className="flex justify-between border-b pb-2">
-                                  <span className="text-sm text-muted-foreground">Взнос</span>
-                                  <span className="font-semibold">1 344 ₽/мес</span>
-                                </div>
-                                <div className="flex justify-between border-b pb-2">
-                                  <span className="text-sm text-muted-foreground">Выплата</span>
-                                  <span className="font-semibold">до 35 000 ₽/мес</span>
-                                </div>
-                                <div className="flex justify-between border-b pb-2">
-                                  <span className="text-sm text-muted-foreground">Стаж для выплат</span>
-                                  <span className="font-semibold">от 6 мес</span>
-                                </div>
-                              </div>
-                              <Button variant="outline" className="w-full border-2 border-foreground/10 hover:bg-accent">
-                                Выбрать базовый
-                              </Button>
-                            </div>
-
-                            <div className="group flex flex-col rounded-2xl border border-blue-200 bg-blue-50/10 p-6 shadow-sm transition-all hover:shadow-md dark:border-blue-900/30">
-                              <div className="mb-4 flex items-center gap-4">
-                                <div className="rounded-xl bg-blue-100 p-3 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400">
-                                  <TrendingUp className="h-6 w-6" />
-                                </div>
-                                <h4 className="text-xl font-bold">Тариф «Максимум»</h4>
-                              </div>
-                              <div className="mb-6 flex-1 space-y-3">
-                                <div className="flex justify-between border-b border-blue-100 pb-2 dark:border-blue-900/30">
-                                  <span className="text-sm text-muted-foreground">Взнос</span>
-                                  <span className="font-semibold">1 920 ₽/мес</span>
-                                </div>
-                                <div className="flex justify-between border-b border-blue-100 pb-2 dark:border-blue-900/30">
-                                  <span className="text-sm text-muted-foreground">Выплата</span>
-                                  <span className="font-semibold">до 50 000 ₽/мес</span>
-                                </div>
-                                <div className="flex justify-between border-b border-blue-100 pb-2 dark:border-blue-900/30">
-                                  <span className="text-sm text-muted-foreground">Стаж для выплат</span>
-                                  <span className="font-semibold">от 6 мес</span>
-                                </div>
-                              </div>
-                              <Button className="w-full bg-blue-600 text-white shadow-lg shadow-blue-500/20 hover:bg-blue-700">
-                                Выбрать максимум
-                              </Button>
-                            </div>
+                          <div className="space-y-2">
+                            <h4 className="font-semibold text-lg flex items-center gap-2">
+                              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold">2</span>
+                              Условия получения
+                            </h4>
+                            <ul className="list-disc pl-10 space-y-1 text-sm text-muted-foreground">
+                              <li><span className="font-medium text-foreground">Стаж:</span> Непрерывная уплата взносов не менее 6 месяцев.</li>
+                              <li><span className="font-medium text-foreground">Процесс:</span> Оформить электронный больничный лист у врача.</li>
+                              <li><span className="font-medium text-foreground">Заявление в СФР:</span> Подать заявление на выплату через «Мой налог» или Госуслуги в течение 6 месяцев после выздоровления.</li>
+                            </ul>
                           </div>
 
-                          <div className="flex gap-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-900 dark:border-amber-900/30 dark:bg-amber-900/10 dark:text-amber-200">
-                            <AlertCircle className="h-6 w-6 flex-shrink-0 text-amber-600 dark:text-amber-400" />
-                            <div className="text-sm">
-                              <p className="mb-1 font-bold">Важно знать</p>
-                              <p className="opacity-90">
-                                Размер пособия зависит от общего страхового стажа:
-                                <strong> до 5 лет — 60%</strong>,
-                                <strong> 5-8 лет — 80%</strong>,
-                                <strong> свыше 8 лет — 100% </strong>
-                                от среднего заработка.
-                              </p>
-                            </div>
+                          <div className="space-y-2">
+                            <h4 className="font-semibold text-lg flex items-center gap-2">
+                              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold">3</span>
+                              Размер пособия
+                            </h4>
+                            <ul className="list-disc pl-10 space-y-1 text-sm text-muted-foreground">
+                              <li><span className="font-medium text-foreground">До 12 месяцев стажа:</span> 70% от выбранной страховой суммы.</li>
+                              <li><span className="font-medium text-foreground">От 12 месяцев стажа и более:</span> 100% от выбранной страховой суммы.</li>
+                              <li><span className="font-medium text-foreground">Выплата:</span> Пособие перечисляется в течение 10 рабочих дней после закрытия больничного.</li>
+                            </ul>
+                          </div>
+
+                          <div className="space-y-2">
+                            <h4 className="font-semibold text-lg flex items-center gap-2">
+                              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold">4</span>
+                              Бонус
+                            </h4>
+                            <p className="pl-10 text-sm text-muted-foreground">
+                              За длительное участие в программе без выплат (18 и 24 месяца) предусмотрено снижение взноса на 10% и 30% соответственно.
+                            </p>
+                          </div>
+
+                          <div className="pt-4 flex justify-end">
+                            <Button onClick={() => setIsInfoOpen(false)}>Понятно</Button>
                           </div>
                         </div>
                       </DialogContent>

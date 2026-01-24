@@ -1,104 +1,18 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Heart, PiggyBank, Calculator, TrendingUp, Info, CheckCircle2, AlertTriangle } from "lucide-react";
+import { Heart, TrendingUp, CheckCircle2, AlertTriangle, ShieldCheck } from "lucide-react";
 import { useState } from "react";
-
-interface InsuranceOption {
-  type: "pension" | "medical";
-  title: string;
-  description: string;
-  cost2024: number;
-  benefits: string[];
-  required: boolean;
-}
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Pricing } from "@/components/blocks/pricing";
 
 export default function SocialInsuranceGuide() {
-  const [monthlyIncome, setMonthlyIncome] = useState("80000");
-  const [pensionYears, setPensionYears] = useState("5");
+  const [isPricingOpen, setIsPricingOpen] = useState(false);
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
 
-  const calculateVoluntaryContributions = () => {
-    const income = parseFloat(monthlyIncome) || 0;
-    const annualIncome = income * 12;
-
-    // Фиксированные взносы 2024
-    const fixedPensionSFR = 36723;
-    const fixedMedicalFFOMS = 9119;
-    const total = fixedPensionSFR + fixedMedicalFFOMS;
-
-    // Дополнительный 1% с дохода свыше 300к
-    const additional1Percent = annualIncome > 300000
-      ? (annualIncome - 300000) * 0.01
-      : 0;
-
-    // ФСС для больничных (добровольно)
-    const voluntaryFSS = 5652; // ~471 в месяц
-
-    return {
-      pensionFixed: fixedPensionSFR,
-      medicalFixed: fixedMedicalFFOMS,
-      additional: additional1Percent,
-      totalMandatory: total + additional1Percent,
-      fss: voluntaryFSS,
-      totalWithFSS: total + additional1Percent + voluntaryFSS,
-      monthlyMandatory: (total + additional1Percent) / 12,
-      monthlyWithFSS: (total + additional1Percent + voluntaryFSS) / 12,
-    };
+  const handleTariffSelect = (type: 'base' | 'max') => {
+    setIsInfoOpen(true);
   };
-
-  const calculatePensionProjection = () => {
-    const years = parseFloat(pensionYears) || 0;
-    const contributions = calculateVoluntaryContributions();
-
-    // Упрощённый расчёт пенсионных баллов
-    // 1 балл ≈ 134.69 ₽ в месяц в 2024
-    const ballsPerYear = contributions.pensionFixed / 12000; // Примерно
-    const totalBalls = ballsPerYear * years;
-    const monthlyPensionBonus = totalBalls * 134.69;
-
-    return {
-      years,
-      totalBalls: Math.round(totalBalls * 10) / 10,
-      monthlyBonus: Math.round(monthlyPensionBonus),
-      totalContributed: Math.round(contributions.pensionFixed * years)
-    };
-  };
-
-  const contributions = calculateVoluntaryContributions();
-  const pensionProjection = calculatePensionProjection();
-
-  const insuranceOptions: InsuranceOption[] = [
-    {
-      type: "pension",
-      title: "Пенсионное (СФР)",
-      description: "Обязательные взносы для трудового стажа и будущей пенсии",
-      cost2024: 36723,
-      benefits: [
-        "1 год трудового стажа",
-        "Пенсионные баллы для расчёта пенсии",
-        "Требуется для минимального стажа (15 лет)",
-        "Увеличивает размер будущей пенсии"
-      ],
-      required: true
-    },
-    {
-      type: "medical",
-      title: "Медицинское (ФФОМС)",
-      description: "Обязательное медицинское страхование",
-      cost2024: 9119,
-      benefits: [
-        "Полис ОМС действителен",
-        "Бесплатное медобслуживание в гос. клиниках",
-        "Обязательно для всех ИП",
-        "Входит в фиксированный платёж"
-      ],
-      required: true
-    }
-  ];
-
   return (
     <section className="border-b py-20">
       <div className="mx-auto max-w-7xl px-4">
@@ -115,358 +29,302 @@ export default function SocialInsuranceGuide() {
           </p>
         </div>
 
-        <Tabs defaultValue="calculator" className="mb-12">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2" data-testid="tabs-insurance">
-            <TabsTrigger value="calculator" data-testid="tab-insurance-calculator">
-              <Calculator className="mr-2 h-4 w-4" />
-              Калькулятор
-            </TabsTrigger>
-            <TabsTrigger value="info" data-testid="tab-insurance-info">
-              <Info className="mr-2 h-4 w-4" />
-              Подробнее
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="calculator" className="space-y-8">
-            {/* Калькулятор взносов */}
+        <div className="space-y-8">
+          {/* Сравнение НПД и ИП */}
+          <div className="grid gap-6 md:grid-cols-2">
             <Card className="border-2">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Calculator className="h-5 w-5 text-primary" />
-                  Калькулятор взносов для ИП
-                </CardTitle>
-                <CardDescription>
-                  Рассчитайте обязательные и добровольные страховые взносы
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid gap-6 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="monthly-income">Ваш месячный доход (₽)</Label>
-                    <Input
-                      id="monthly-income"
-                      type="number"
-                      min="0"
-                      value={monthlyIncome}
-                      onChange={(e) => setMonthlyIncome(e.target.value)}
-                      data-testid="input-monthly-income"
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Годовой доход: {(parseFloat(monthlyIncome) * 12).toLocaleString('ru-RU')} ₽
-                    </p>
-                  </div>
-                </div>
-
-                <div className="space-y-4 rounded-lg border bg-accent/10 p-6">
-                  <h3 className="font-semibold">Обязательные взносы в 2024:</h3>
-
-                  <div className="space-y-3">
-                    <div className="flex justify-between border-b pb-2">
-                      <span className="text-sm">Пенсионное (СФР):</span>
-                      <span className="font-mono font-semibold">36 723 ₽</span>
-                    </div>
-                    <div className="flex justify-between border-b pb-2">
-                      <span className="text-sm">Медицинское (ФФОМС):</span>
-                      <span className="font-mono font-semibold">9 119 ₽</span>
-                    </div>
-                    {contributions.additional > 0 && (
-                      <div className="flex justify-between border-b pb-2">
-                        <span className="text-sm">Доп. 1% с дохода &gt; 300К:</span>
-                        <span className="font-mono font-semibold">
-                          {Math.round(contributions.additional).toLocaleString('ru-RU')} ₽
-                        </span>
-                      </div>
-                    )}
-                    <div className="flex justify-between pt-2 text-lg font-bold">
-                      <span>Итого в год:</span>
-                      <span className="font-mono text-primary" data-testid="text-total-mandatory">
-                        {Math.round(contributions.totalMandatory).toLocaleString('ru-RU')} ₽
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-sm text-muted-foreground">
-                      <span>В месяц:</span>
-                      <span className="font-mono">
-                        ~{Math.round(contributions.monthlyMandatory).toLocaleString('ru-RU')} ₽
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-4 rounded-lg border border-blue-500/30 bg-blue-500/10 p-6">
-                  <div className="flex items-center gap-2">
-                    <Heart className="h-5 w-5 text-blue-600" />
-                    <h3 className="font-semibold">Добровольное страхование (ФСС):</h3>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-sm">Больничные и декретные:</span>
-                      <span className="font-mono font-semibold">5 652 ₽/год</span>
-                    </div>
-                    <div className="rounded-md bg-background/50 p-3 text-sm">
-                      <p className="mb-2 font-medium">Что даёт:</p>
-                      <ul className="space-y-1 text-muted-foreground">
-                        <li>✓ Больничный лист (100% среднего заработка)</li>
-                        <li>✓ Декретные выплаты</li>
-                        <li>✓ Выплаты по уходу за ребёнком</li>
-                        <li>✓ Начинает действовать через год после уплаты</li>
-                      </ul>
-                    </div>
-                    <div className="flex justify-between border-t pt-2 text-sm">
-                      <span>В месяц:</span>
-                      <span className="font-mono">~471 ₽</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="rounded-lg border-2 border-primary/20 bg-primary/5 p-4">
-                  <div className="flex justify-between text-lg font-bold">
-                    <span>Всего с больничными:</span>
-                    <span className="font-mono text-primary">
-                      {Math.round(contributions.totalWithFSS).toLocaleString('ru-RU')} ₽/год
-                    </span>
-                  </div>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    ~{Math.round(contributions.monthlyWithFSS).toLocaleString('ru-RU')} ₽ в месяц
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Прогноз пенсии */}
-            <Card className="border-2">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <PiggyBank className="h-5 w-5 text-primary" />
-                  Прогноз будущей пенсии
-                </CardTitle>
-                <CardDescription>
-                  Посчитайте примерную прибавку к пенсии от взносов
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="pension-years">Сколько лет планируете работать как ИП?</Label>
-                  <Input
-                    id="pension-years"
-                    type="number"
-                    min="1"
-                    max="40"
-                    value={pensionYears}
-                    onChange={(e) => setPensionYears(e.target.value)}
-                    data-testid="input-pension-years"
-                  />
-                </div>
-
-                <div className="grid gap-4 md:grid-cols-3">
-                  <div className="rounded-lg border bg-accent/10 p-4">
-                    <div className="mb-1 text-sm text-muted-foreground">Стаж</div>
-                    <div className="text-2xl font-bold" data-testid="text-pension-years">
-                      {pensionProjection.years} лет
-                    </div>
-                  </div>
-                  <div className="rounded-lg border bg-accent/10 p-4">
-                    <div className="mb-1 text-sm text-muted-foreground">Пенс. баллов</div>
-                    <div className="text-2xl font-bold" data-testid="text-pension-points">
-                      {pensionProjection.totalBalls}
-                    </div>
-                  </div>
-                  <div className="rounded-lg border bg-primary/10 p-4">
-                    <div className="mb-1 text-sm text-muted-foreground">Прибавка к пенсии</div>
-                    <div className="text-2xl font-bold text-primary" data-testid="text-pension-bonus">
-                      +{pensionProjection.monthlyBonus.toLocaleString('ru-RU')} ₽
-                    </div>
-                    <div className="text-xs text-muted-foreground">в месяц</div>
-                  </div>
-                </div>
-
-                <div className="rounded-lg border bg-muted/50 p-4 text-sm">
-                  <p className="font-medium">Всего вложено в пенсию:</p>
-                  <p className="mt-1 font-mono text-lg font-bold">
-                    {pensionProjection.totalContributed.toLocaleString('ru-RU')} ₽
-                  </p>
-                  <p className="mt-2 text-xs text-muted-foreground">
-                    Расчёт приблизительный. Реальная пенсия зависит от многих факторов:
-                    индексации, стоимости балла, общего стажа работы.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="info" className="space-y-8">
-            {/* Сравнение НПД и ИП */}
-            <div className="grid gap-6 md:grid-cols-2">
-              <Card className="border-2">
-                <CardHeader>
-                  <CardTitle>НПД (Самозанятый)</CardTitle>
-                  <CardDescription>Минимальные обязательства</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex gap-3">
-                    <AlertTriangle className="h-5 w-5 flex-shrink-0 text-amber-500" />
-                    <div>
-                      <p className="font-medium">Взносы НЕ обязательны</p>
-                      <p className="text-sm text-muted-foreground">
-                        Платите только налог 4-6%, без страховых взносов
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="rounded-md border bg-muted/50 p-4">
-                    <p className="mb-2 text-sm font-medium">Что получаете по умолчанию:</p>
-                    <ul className="space-y-1 text-sm text-muted-foreground">
-                      <li>✗ Нет трудового стажа</li>
-                      <li>✗ Нет пенсионных накоплений</li>
-                      <li>✗ Нет больничных</li>
-                      <li>✓ ОМС действует (базовое мед. обслуживание)</li>
-                    </ul>
-                  </div>
-
-                  <div className="rounded-md border border-green-500/30 bg-green-500/10 p-4">
-                    <p className="mb-2 text-sm font-medium text-green-900 dark:text-green-100">
-                      Можно платить добровольно:
-                    </p>
-                    <ul className="space-y-1 text-sm">
-                      <li>• СФР (пенсия): 45 842 ₽/год</li>
-                      <li>• ФСС (больничные): 5 652 ₽/год</li>
-                      <li className="pt-2 text-xs text-muted-foreground">
-                        Итого: ~4 291 ₽/месяц за полный пакет
-                      </li>
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border-2">
-                <CardHeader>
-                  <CardTitle>ИП (Индивидуальный предприниматель)</CardTitle>
-                  <CardDescription>Полная социальная защита</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex gap-3">
-                    <CheckCircle2 className="h-5 w-5 flex-shrink-0 text-green-500" />
-                    <div>
-                      <p className="font-medium">Взносы обязательны</p>
-                      <p className="text-sm text-muted-foreground">
-                        Фиксированный платёж вне зависимости от дохода
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="rounded-md border bg-green-500/10 p-4">
-                    <p className="mb-2 text-sm font-medium text-green-900 dark:text-green-100">
-                      Обязательные взносы 2024:
-                    </p>
-                    <ul className="space-y-1 text-sm">
-                      <li className="flex justify-between">
-                        <span>Пенсионное (СФР):</span>
-                        <span className="font-mono font-semibold">36 723 ₽</span>
-                      </li>
-                      <li className="flex justify-between">
-                        <span>Медицинское (ФФОМС):</span>
-                        <span className="font-mono font-semibold">9 119 ₽</span>
-                      </li>
-                      <li className="flex justify-between border-t pt-1">
-                        <span className="font-medium">Итого:</span>
-                        <span className="font-mono font-semibold">45 842 ₽/год</span>
-                      </li>
-                      <li className="pt-2 text-xs text-muted-foreground">
-                        + 1% от дохода свыше 300 000 ₽/год
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="rounded-md border bg-muted/50 p-4">
-                    <p className="mb-2 text-sm font-medium">Что получаете:</p>
-                    <ul className="space-y-1 text-sm text-muted-foreground">
-                      <li>✓ Трудовой стаж (каждый год)</li>
-                      <li>✓ Пенсионные баллы</li>
-                      <li>✓ ОМС (полное медобслуживание)</li>
-                      <li>• Больничные — за доп. взнос в ФСС</li>
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Важная информация */}
-            <Card className="border-2 border-blue-500/30 bg-blue-500/5">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5 text-blue-600" />
-                  Стратегия для начинающих
-                </CardTitle>
+                <CardTitle>НПД (Самозанятый)</CardTitle>
+                <CardDescription>Минимальные обязательства</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="space-y-3 text-sm">
-                  <div className="flex gap-3">
-                    <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-                      1
-                    </div>
-                    <div>
-                      <p className="font-medium">Начинайте с НПД</p>
-                      <p className="text-muted-foreground">
-                        Пока доход нестабильный (&lt; 100К/мес) — работайте как НПД.
-                        Платите только 4-6% налог без страховых взносов.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-3">
-                    <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-                      2
-                    </div>
-                    <div>
-                      <p className="font-medium">Платите добровольно в СФР</p>
-                      <p className="text-muted-foreground">
-                        Если уверены в доходах — начните копить стаж.
-                        45 842 ₽/год = 1 год стажа. Можно платить частями.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-3">
-                    <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-                      3
-                    </div>
-                    <div>
-                      <p className="font-medium">Переходите на ИП при росте</p>
-                      <p className="text-muted-foreground">
-                        Когда доход стабильно &gt; 200К/мес или нужны сотрудники —
-                        открывайте ИП. Взносы станут обязательными, но УСН 6% выгоднее НПД.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-3">
-                    <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-                      4
-                    </div>
-                    <div>
-                      <p className="font-medium">Добавьте ФСС при необходимости</p>
-                      <p className="text-muted-foreground">
-                        Планируете детей или часто болеете? Подключите добровольное
-                        страхование ФСС (5 652 ₽/год) для больничных и декретных.
-                      </p>
-                    </div>
+                <div className="flex gap-3">
+                  <AlertTriangle className="h-5 w-5 flex-shrink-0 text-amber-500" />
+                  <div>
+                    <p className="font-medium">Взносы НЕ обязательны</p>
+                    <p className="text-sm text-muted-foreground">
+                      Платите только налог 4-6%, без страховых взносов
+                    </p>
                   </div>
                 </div>
 
-                <div className="rounded-lg border bg-background p-4">
-                  <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                    Важно помнить
+                <div className="rounded-md border bg-muted/50 p-4">
+                  <p className="mb-2 text-sm font-medium">Что получаете по умолчанию:</p>
+                  <ul className="space-y-1 text-sm text-muted-foreground">
+                    <li>✗ Нет трудового стажа</li>
+                    <li>✗ Нет пенсионных накоплений</li>
+                    <li>✗ Нет больничных</li>
+                    <li>✓ ОМС действует (базовое мед. обслуживание)</li>
+                  </ul>
+                </div>
+
+                <div className="rounded-md border border-green-500/30 bg-green-500/10 p-4">
+                  <p className="mb-2 text-sm font-medium text-green-900 dark:text-green-100">
+                    Можно платить добровольно:
                   </p>
-                  <p className="mt-2 text-sm">
-                    Без уплаты взносов в СФР у вас не будет трудового стажа.
-                    Для получения страховой пенсии в России нужен минимум 15 лет стажа
-                    и 30 пенсионных баллов. Каждый год работы без взносов — потерянный стаж.
+                  <ul className="space-y-1 text-sm">
+                    <li>• СФР (пенсия): 45 842 ₽/год</li>
+                    <li>• ФСС (больничные): 5 652 ₽/год</li>
+                    <li className="pt-2 text-xs text-muted-foreground">
+                      Итого: ~4 291 ₽/месяц за полный пакет
+                    </li>
+                  </ul>
+                </div>
+
+                <Dialog open={isPricingOpen} onOpenChange={setIsPricingOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="w-full gap-2 hover-elevate active-elevate-2 shadow-xs active:shadow-none border-blue-200 bg-blue-50/50 text-blue-700 hover:bg-blue-100 hover:text-blue-800 dark:border-blue-900/30 dark:bg-blue-900/20 dark:text-blue-300">
+                      <ShieldCheck className="h-4 w-4" />
+                      Новые больничные 2026
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-h-[95vh] max-w-4xl overflow-y-auto w-full p-0 bg-transparent border-none shadow-none sm:max-w-[900px]">
+                    <div className="relative w-full rounded-xl bg-card shadow-2xl ring-1 ring-border overflow-hidden">
+                      <div className="p-2 md:p-4">
+                        <Pricing
+                          title="Страхование на случай болезни (2026)"
+                          description={`С 2026 года самозанятые могут добровольно страховаться в СФР.\nПраво на выплаты появляется через 6 месяцев непрерывной уплаты взносов.\nОформить можно в приложении «Мой налог» (эксперимент до 2028 года).`}
+                          hideToggle={true}
+                          plans={[
+                            {
+                              name: "БАЗОВЫЙ",
+                              price: "1344",
+                              yearlyPrice: "16128",
+                              period: "в месяц",
+                              features: [
+                                "Страховая сумма: 35 000 ₽",
+                                "Стаж 6-12 мес: 70% выплаты",
+                                "Стаж 12+ мес: 100% выплаты",
+                                "Период ожидания: 6 месяцев",
+                                "Не включает декретные выплаты"
+                              ],
+                              description: "Взнос ~1344 ₽/мес",
+                              buttonText: "Выбрать базовый",
+                              isPopular: false,
+                              type: 'base',
+                              onClick: (plan) => {
+                                if (plan.type) handleTariffSelect(plan.type);
+                              }
+                            },
+                            {
+                              name: "МАКСИМУМ",
+                              price: "1920",
+                              yearlyPrice: "23040",
+                              period: "в месяц",
+                              features: [
+                                "Страховая сумма: 50 000 ₽",
+                                "Стаж 6-12 мес: 70% выплаты",
+                                "Стаж 12+ мес: 100% выплаты",
+                                "Период ожидания: 6 месяцев",
+                                "Не включает декретные выплаты"
+                              ],
+                              description: "Взнос ~1920 ₽/мес",
+                              buttonText: "Выбрать максимум",
+                              isPopular: true,
+                              type: 'max',
+                              onClick: (plan) => {
+                                if (plan.type) handleTariffSelect(plan.type);
+                              }
+                            }
+                          ]}
+                          onClose={() => setIsPricingOpen(false)}
+                        />
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+
+                <Dialog open={isInfoOpen} onOpenChange={setIsInfoOpen}>
+                  <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-bold">Условия получения больничных для самозанятых</h3>
+                      <p className="text-muted-foreground">
+                        Самозанятые могут получать оплачиваемый больничный, подключившись к эксперименту через приложение «Мой налог» (до 30.09.2027), выбрав страховую базу (35 000 или 50 000 руб.) и регулярно уплачивая 3,84% взносы, что дает право на пособие (от 70% до 100%) после 6 месяцев стажа; оформление происходит через электронный больничный, а заявление подается в СФР через «Мой налог» или Госуслуги.
+                      </p>
+
+                      <div className="space-y-2">
+                        <h4 className="font-semibold text-lg flex items-center gap-2">
+                          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold">1</span>
+                          Как подключиться (с 2026 года)
+                        </h4>
+                        <ul className="list-disc pl-10 space-y-1 text-sm text-muted-foreground">
+                          <li><span className="font-medium text-foreground">Подать заявление:</span> Через приложение «Мой налог», портал Госуслуг или в МФЦ до 30 сентября 2027 года.</li>
+                          <li><span className="font-medium text-foreground">Выбрать страховую базу:</span> 35 000 руб. (взнос 1344 руб./мес.) или 50 000 руб. (взнос 1920 руб./мес.).</li>
+                          <li><span className="font-medium text-foreground">Уплачивать взносы:</span> Ежемесячно или единовременно за год, начиная со следующего месяца после подачи заявления.</li>
+                        </ul>
+                      </div>
+
+                      <div className="space-y-2">
+                        <h4 className="font-semibold text-lg flex items-center gap-2">
+                          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold">2</span>
+                          Условия получения
+                        </h4>
+                        <ul className="list-disc pl-10 space-y-1 text-sm text-muted-foreground">
+                          <li><span className="font-medium text-foreground">Стаж:</span> Непрерывная уплата взносов не менее 6 месяцев.</li>
+                          <li><span className="font-medium text-foreground">Процесс:</span> Оформить электронный больничный лист у врача.</li>
+                          <li><span className="font-medium text-foreground">Заявление в СФР:</span> Подать заявление на выплату через «Мой налог» или Госуслуги в течение 6 месяцев после выздоровления.</li>
+                        </ul>
+                      </div>
+
+                      <div className="space-y-2">
+                        <h4 className="font-semibold text-lg flex items-center gap-2">
+                          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold">3</span>
+                          Размер пособия
+                        </h4>
+                        <ul className="list-disc pl-10 space-y-1 text-sm text-muted-foreground">
+                          <li><span className="font-medium text-foreground">До 12 месяцев стажа:</span> 70% от выбранной страховой суммы.</li>
+                          <li><span className="font-medium text-foreground">От 12 месяцев стажа и более:</span> 100% от выбранной страховой суммы.</li>
+                          <li><span className="font-medium text-foreground">Выплата:</span> Пособие перечисляется в течение 10 рабочих дней после закрытия больничного.</li>
+                        </ul>
+                      </div>
+
+                      <div className="space-y-2">
+                        <h4 className="font-semibold text-lg flex items-center gap-2">
+                          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold">4</span>
+                          Бонус
+                        </h4>
+                        <p className="pl-10 text-sm text-muted-foreground">
+                          За длительное участие в программе без выплат (18 и 24 месяца) предусмотрено снижение взноса на 10% и 30% соответственно.
+                        </p>
+                      </div>
+
+                      <div className="pt-4 flex justify-end">
+                        <Button onClick={() => setIsInfoOpen(false)}>Понятно</Button>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2">
+              <CardHeader>
+                <CardTitle>ИП (Индивидуальный предприниматель)</CardTitle>
+                <CardDescription>Полная социальная защита</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex gap-3">
+                  <CheckCircle2 className="h-5 w-5 flex-shrink-0 text-green-500" />
+                  <div>
+                    <p className="font-medium">Взносы обязательны</p>
+                    <p className="text-sm text-muted-foreground">
+                      Фиксированный платёж вне зависимости от дохода
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-md border bg-green-500/10 p-4">
+                  <p className="mb-2 text-sm font-medium text-green-900 dark:text-green-100">
+                    Обязательные взносы 2024:
                   </p>
+                  <ul className="space-y-1 text-sm">
+                    <li className="flex justify-between">
+                      <span>Пенсионное (СФР):</span>
+                      <span className="font-mono font-semibold">36 723 ₽</span>
+                    </li>
+                    <li className="flex justify-between">
+                      <span>Медицинское (ФФОМС):</span>
+                      <span className="font-mono font-semibold">9 119 ₽</span>
+                    </li>
+                    <li className="flex justify-between border-t pt-1">
+                      <span className="font-medium">Итого:</span>
+                      <span className="font-mono font-semibold">45 842 ₽/год</span>
+                    </li>
+                    <li className="pt-2 text-xs text-muted-foreground">
+                      + 1% от дохода свыше 300 000 ₽/год
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="rounded-md border bg-muted/50 p-4">
+                  <p className="mb-2 text-sm font-medium">Что получаете:</p>
+                  <ul className="space-y-1 text-sm text-muted-foreground">
+                    <li>✓ Трудовой стаж (каждый год)</li>
+                    <li>✓ Пенсионные баллы</li>
+                    <li>✓ ОМС (полное медобслуживание)</li>
+                    <li>• Больничные — за доп. взнос в ФСС</li>
+                  </ul>
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
-        </Tabs>
+          </div>
+
+          {/* Важная информация */}
+          <Card className="border-2 border-blue-500/30 bg-blue-500/5">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-blue-600" />
+                Стратегия для начинающих
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-3 text-sm">
+                <div className="flex gap-3">
+                  <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                    1
+                  </div>
+                  <div>
+                    <p className="font-medium">Начинайте с НПД</p>
+                    <p className="text-muted-foreground">
+                      Пока доход нестабильный (&lt; 100К/мес) — работайте как НПД.
+                      Платите только 4-6% налог без страховых взносов.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                    2
+                  </div>
+                  <div>
+                    <p className="font-medium">Платите добровольно в СФР</p>
+                    <p className="text-muted-foreground">
+                      Если уверены в доходах — начните копить стаж.
+                      45 842 ₽/год = 1 год стажа. Можно платить частями.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                    3
+                  </div>
+                  <div>
+                    <p className="font-medium">Переходите на ИП при росте</p>
+                    <p className="text-muted-foreground">
+                      Когда доход стабильно &gt; 200К/мес или нужны сотрудники —
+                      открывайте ИП. Взносы станут обязательными, но УСН 6% выгоднее НПД.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                    4
+                  </div>
+                  <div>
+                    <p className="font-medium">Добавьте ФСС при необходимости</p>
+                    <p className="text-muted-foreground">
+                      Планируете детей или часто болеете? Подключите добровольное
+                      страхование ФСС (5 652 ₽/год) для больничных и декретных.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-lg border bg-background p-4">
+                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  Важно помнить
+                </p>
+                <p className="mt-2 text-sm">
+                  Без уплаты взносов в СФР у вас не будет трудового стажа.
+                  Для получения страховой пенсии в России нужен минимум 15 лет стажа
+                  и 30 пенсионных баллов. Каждый год работы без взносов — потерянный стаж.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </section>
   );

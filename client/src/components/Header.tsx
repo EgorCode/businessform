@@ -16,7 +16,7 @@ export default function Header() {
   return (
     <>
       {/* Основной контейнер Header */}
-      <div className="pt-6 px-4 flex justify-center sticky top-0 z-50">
+      <div className="pt-2 md:pt-6 px-4 flex justify-center sticky top-0 z-50">
         <header className="glass-panel rounded-full px-2 py-2 flex justify-between items-center w-full max-w-7xl shadow-glass hover:shadow-glass-hover transition-all duration-500 transform hover:-translate-y-1">
 
           {/* Logo */}
@@ -36,31 +36,31 @@ export default function Header() {
           <nav className="hidden lg:flex items-center gap-1 bg-white/50 rounded-full px-1 py-1 border border-white/60">
             <Link href="/start">
               <span className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-green-600 hover:bg-green-50 rounded-full transition-all duration-300 cursor-pointer" data-testid="link-start">
-                Начнём?
+                Начать сейчас
               </span>
             </Link>
             <Link href="/case-studies">
               <span className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-green-600 hover:bg-green-50 rounded-full transition-all duration-300 cursor-pointer" data-testid="link-case-studies">
-                Кейсы
+                Истории
               </span>
             </Link>
             <Link href="/calculators">
-              <span className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-blue-600 hover:bg-white rounded-full transition-all duration-300 cursor-pointer" data-testid="link-calculators">
+              <span className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-green-600 hover:bg-green-50 rounded-full transition-all duration-300 cursor-pointer" data-testid="link-calculators">
                 Калькуляторы
               </span>
             </Link>
             <Link href="/news">
-              <span className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-blue-600 hover:bg-white rounded-full transition-all duration-300 cursor-pointer" data-testid="link-news">
+              <span className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-green-600 hover:bg-green-50 rounded-full transition-all duration-300 cursor-pointer" data-testid="link-news">
                 Новости
               </span>
             </Link>
             <Link href="/knowledge">
-              <span className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-blue-600 hover:bg-white rounded-full transition-all duration-300 cursor-pointer" data-testid="link-knowledge">
+              <span className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-green-600 hover:bg-green-50 rounded-full transition-all duration-300 cursor-pointer" data-testid="link-knowledge">
                 База знаний
               </span>
             </Link>
             <Link href="/documents">
-              <span className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-blue-600 hover:bg-white rounded-full transition-all duration-300 cursor-pointer" data-testid="link-documents">
+              <span className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-green-600 hover:bg-green-50 rounded-full transition-all duration-300 cursor-pointer" data-testid="link-documents">
                 Документы
               </span>
             </Link>

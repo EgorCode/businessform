@@ -2,7 +2,7 @@ import { Link } from "wouter";
 
 export default function Footer() {
   return (
-    <footer className="border-t bg-muted/30 py-16">
+    <footer className="border-t py-16">
       <div className="mx-auto max-w-7xl px-4">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div>
@@ -57,8 +57,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-blog">
-                  Блог
+                <a href="https://t.me/+fwAIYLOHTMI5OGQy" className="text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-blog">
+                  Телеграмм-канал
                 </a>
               </li>
               <li>
@@ -69,7 +69,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-support">
+                <a href="https://t.me/+hXZ2a1ltQORiYWZi" className="text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-support">
                   Поддержка
                 </a>
               </li>
@@ -87,7 +87,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-contacts">
+                <a href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-contacts">
                   Контакты
                 </a>
               </li>
@@ -115,7 +115,7 @@ export default function Footer() {
             </p>
             <div className="flex items-center gap-2">
               <div className="flex h-2 w-2 rounded-full bg-green-500"></div>
-              <span className="text-xs text-muted-foreground">Обновлено: Ноябрь 2026</span>
+              <span className="text-xs text-muted-foreground">Обновлено: 2026</span>
             </div>
           </div>
         </div>
@@ -126,7 +126,7 @@ export default function Footer() {
               © 2026 БизнесФорма. Все права защищены.
             </p>
             <div className="flex gap-6">
-              <a href="https://t.me/bizgide" className="text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-telegram">
+              <a href="https://t.me/+fwAIYLOHTMI5OGQy" className="text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-telegram">
                 Telegram
               </a>
               <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-vk">

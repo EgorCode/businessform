@@ -59,7 +59,7 @@ const staticCaseStudies: CaseStudy[] = [
       "ИИ-помощник подтверждает: «Для ваших задач идеально подходит Самозанятость. Налог на работу с компаниями — 6%»",
       "Анна изучает инструкцию «Как выставить первый счет через приложение Мой Налог»"
     ],
-    result: "Анна оформляет статус за 5 минут. Она использует Lite-подписку, чтобы бот напоминал ей вовремя формировать чеки для агентства.",
+    result: "Анна оформляет статус за 5 минут. Она использует Бесплатную подписку, чтобы бот напоминал ей вовремя формировать чеки для агентства.",
     subscription: "lite",
     features: ["Напоминания о чеках", "Уведомления для бухгалтерии заказчика", "Шаблоны договоров"],
     taxRate: "6%",
@@ -280,7 +280,7 @@ export default function SelfEmployedCaseStudies() {
                         <CardTitle className="text-xl">{caseItem.name}</CardTitle>
                         {caseItem.subscription && (
                           <Badge variant={caseItem.subscription === "max" ? "default" : "secondary"} className="text-xs">
-                            {caseItem.subscription === "max" ? "Max" : "Lite"}
+                            {caseItem.subscription === "max" ? "Максимальная" : "Бесплатная"}
                           </Badge>
                         )}
                       </div>
@@ -376,7 +376,7 @@ export default function SelfEmployedCaseStudies() {
                         <div className="flex items-center gap-2 mb-3">
                           <Sparkles className="h-5 w-5 text-primary" />
                           <span className="text-xs font-medium text-primary uppercase tracking-wide">
-                            {caseItem.subscription ? `Функции ${caseItem.subscription}-подписки` : "Полезные функции"}
+                            {caseItem.subscription ? `Функции ${caseItem.subscription === "max" ? "Максимальной" : "Бесплатной"} подписки` : "Полезные функции"}
                           </span>
                         </div>
                         <div className="flex flex-wrap gap-2">

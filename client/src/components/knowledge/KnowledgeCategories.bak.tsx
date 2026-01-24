@@ -311,7 +311,213 @@ const staticArticles: Article[] = [
     isPopular: true,
     publishDate: "2024-03-28"
   },
+  // Статьи из бэкапа
+  {
+    id: 1,
+    title: "Пошаговая инструкция по регистрации ИП в 2024 году",
+    category: "starting",
+    excerpt: "Подробный гайд по всем этапам регистрации индивидуального предпринимателя: от подготовки документов до получения свидетельства",
+    readTime: "8 мин",
+    tags: ["Регистрация ИП", "Документы", "Налоги"],
+    views: 1520,
+    rating: 4.8,
+    isFavorite: false,
+    isNew: true,
+    isPopular: true,
+    publishDate: "2024-03-15"
+  },
+  {
+    id: 2,
+    title: "Выбор формы собственности: ИП, ООО или АО?",
+    category: "starting",
+    excerpt: "Сравнительный анализ преимуществ и недостатков различных организационно-правовых форм для бизнеса",
+    readTime: "12 мин",
+    tags: ["Форма собственности", "ИП", "ООО"],
+    views: 980,
+    rating: 4.6,
+    isFavorite: false,
+    isNew: false,
+    isPopular: false,
+    publishDate: "2024-02-20"
+  },
+  {
+    id: 3,
+    title: "Что делать после регистрации ООО: чек-лист",
+    category: "starting",
+    excerpt: "15 важных шагов, которые нужно сделать сразу после получения документов о регистрации общества",
+    readTime: "10 мин",
+    tags: ["ООО", "Регистрация", "Чек-лист"],
+    views: 2100,
+    rating: 4.9,
+    isFavorite: true,
+    isNew: false,
+    isPopular: true,
+    publishDate: "2024-01-10"
+  },
 
+  // Налоги и бухгалтерия
+  {
+    id: 4,
+    title: "УСН 6% или 15%: как выбрать оптимальную ставку",
+    category: "taxes",
+    excerpt: "Разбираем на примерах, в каких случаях выгоднее платить налог с доходов, а когда - с разницы между доходами и расходами",
+    readTime: "6 мин",
+    tags: ["УСН", "Налоги", "Оптимизация"],
+    views: 1850,
+    rating: 4.7,
+    isFavorite: false,
+    isNew: false,
+    isPopular: true,
+    publishDate: "2024-02-15"
+  },
+  {
+    id: 5,
+    title: "НПД vs ИП: когда пора переходить",
+    category: "taxes",
+    excerpt: "Признаки того, что самозанятость больше не подходит для вашего бизнеса и пора регистрировать ИП",
+    readTime: "5 мин",
+    tags: ["НПД", "Самозанятость", "ИП"],
+    views: 1230,
+    rating: 4.5,
+    isFavorite: false,
+    isNew: true,
+    isPopular: false,
+    publishDate: "2024-03-20"
+  },
+  {
+    id: 6,
+    title: "Расчёт страховых взносов для ИП в 2024",
+    category: "taxes",
+    excerpt: "Актуальные размеры фиксированных взносов, правила их уплаты и возможность уменьшения налога",
+    readTime: "7 мин",
+    tags: ["Страховые взносы", "ИП", "Налоги"],
+    views: 1670,
+    rating: 4.8,
+    isFavorite: true,
+    isNew: false,
+    isPopular: false,
+    publishDate: "2024-02-05"
+  },
+
+  // Кадры и трудовое право
+  {
+    id: 7,
+    title: "Как правильно нанять первого сотрудника",
+    category: "hr",
+    excerpt: "Подробная инструкция по оформлению трудового договора, постановке на учет в фондах и кадровому документообороту",
+    readTime: "12 мин",
+    tags: ["Трудовой договор", "Кадры", "Найм"],
+    views: 1420,
+    rating: 4.9,
+    isFavorite: false,
+    isNew: false,
+    isPopular: true,
+    publishDate: "2024-01-25"
+  },
+  {
+    id: 8,
+    title: "Трудовой договор: основные положения и ошибки",
+    category: "hr",
+    excerpt: "Разбор типичных ошибок при составлении трудовых договоров и как их избежать",
+    readTime: "9 мин",
+    tags: ["Трудовой договор", "Документы", "Ошибки"],
+    views: 890,
+    rating: 4.4,
+    isFavorite: false,
+    isNew: true,
+    isPopular: false,
+    publishDate: "2024-03-18"
+  },
+
+  // Маркетинг и продажи
+  {
+    id: 9,
+    title: "Digital-маркетинг для малого бизнеса: с чего начать",
+    category: "marketing",
+    excerpt: "Пошаговое руководство по продвижению малого бизнеса в интернете с минимальным бюджетом",
+    readTime: "15 мин",
+    tags: ["Маркетинг", "Digital", "Продвижение"],
+    views: 1980,
+    rating: 4.7,
+    isFavorite: true,
+    isNew: false,
+    isPopular: true,
+    publishDate: "2024-02-10"
+  },
+  {
+    id: 10,
+    title: "Эффективные техники продаж для начинающих",
+    category: "marketing",
+    excerpt: "Основные методы и подходы к продажам, которые помогут увеличить конверсию и выручку",
+    readTime: "11 мин",
+    tags: ["Продажи", "Конверсия", "Техники"],
+    views: 1150,
+    rating: 4.6,
+    isFavorite: false,
+    isNew: true,
+    isPopular: false,
+    publishDate: "2024-03-22"
+  },
+
+  // Юридические аспекты
+  {
+    id: 11,
+    title: "Защита интеллектуальной собственности для бизнеса",
+    category: "legal",
+    excerpt: "Как защитить товарные знаки, патенты и авторские права в предпринимательской деятельности",
+    readTime: "13 мин",
+    tags: ["Интеллектуальная собственность", "Патенты", "Защита"],
+    views: 780,
+    rating: 4.5,
+    isFavorite: false,
+    isNew: false,
+    isPopular: false,
+    publishDate: "2024-01-15"
+  },
+  {
+    id: 12,
+    title: "Риски в бизнесе: как минимизировать юридические проблемы",
+    category: "legal",
+    excerpt: "Основные юридические риски для предпринимателей и способы их предотвращения",
+    readTime: "10 мин",
+    tags: ["Риски", "Юридические аспекты", "Безопасность"],
+    views: 1320,
+    rating: 4.8,
+    isFavorite: true,
+    isNew: true,
+    isPopular: false,
+    publishDate: "2024-03-25"
+  },
+
+  // Финансы и инвестиции
+  {
+    id: 13,
+    title: "Финансовое планирование для малого бизнеса",
+    category: "finance",
+    excerpt: "Как составить финансовый план, управлять денежными потоками и обеспечивать рентабельность",
+    readTime: "14 мин",
+    tags: ["Финансы", "Планирование", "Денежные потоки"],
+    views: 1650,
+    rating: 4.7,
+    isFavorite: false,
+    isNew: false,
+    isPopular: true,
+    publishDate: "2024-02-08"
+  },
+  {
+    id: 14,
+    title: "Привлечение инвестиций: подготовка и переговоры",
+    category: "finance",
+    excerpt: "Подготовка бизнеса к привлечению инвестиций и ключевые аспекты переговоров с инвесторами",
+    readTime: "16 мин",
+    tags: ["Инвестиции", "Переговоры", "Финансирование"],
+    views: 920,
+    rating: 4.6,
+    isFavorite: false,
+    isNew: true,
+    isPopular: false,
+    publishDate: "2024-03-28"
+  }
 ];
 
 const categoryNames = {

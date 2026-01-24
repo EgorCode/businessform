@@ -190,9 +190,11 @@ export default function QuickStart() {
             <p className="text-sm text-green-700 mb-3">
               Вы прошли все основные шаги для запуска бизнеса. Теперь вы готовы к официальной регистрации!
             </p>
-            <Button size="sm" className="bg-green-600 hover:bg-green-700">
-              Перейти к регистрации
-              <ArrowRight className="ml-1 h-3 w-3" />
+            <Button size="sm" className="bg-green-600 hover:bg-green-700" asChild>
+              <a href="/start?form=self-employed">
+                Перейти к регистрации
+                <ArrowRight className="ml-1 h-3 w-3" />
+              </a>
             </Button>
           </div>
         )}

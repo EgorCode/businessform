@@ -106,7 +106,7 @@ export default function DocumentLibrary() {
   };
 
   return (
-    <section id="documents" className="border-b bg-muted/30 py-20">
+    <section id="documents" className="bg-transparent py-20">
       <div className="mx-auto max-w-7xl px-4">
         <div className="mb-12 text-center">
           <h2 className="mb-4 text-3xl font-semibold tracking-tight lg:text-4xl" data-testid="text-documents-title">
@@ -195,7 +195,7 @@ export default function DocumentLibrary() {
                     </div>
                   </DialogContent>
                 </Dialog>
-                
+
                 {doc.type === 'form' ? (
                   <Button size="sm" className="gap-2" onClick={() => handleDownload(doc.id, doc.title)}>
                     <Download className="h-4 w-4" />
