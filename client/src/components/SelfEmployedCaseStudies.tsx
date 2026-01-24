@@ -199,13 +199,7 @@ export default function SelfEmployedCaseStudies() {
     }
   };
 
-  if (isLoading && !strapiResponse) {
-    return (
-      <div className="py-20 flex justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
+
 
   return (
     <section className="border-b py-20" id="case-studies">
