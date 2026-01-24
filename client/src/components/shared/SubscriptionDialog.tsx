@@ -2,10 +2,16 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Pricing, PricingPlan } from "@/components/blocks/pricing";
 
-interface SubscriptionDialogProps {
+// Re-export PricingPlan so consumers don't need to import it from pricing block
+export type { PricingPlan };
+
+export interface SubscriptionDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     plans?: PricingPlan[];
+    title?: string;
+    description?: string;
+    hideToggle?: boolean;
 }
 
 const defaultRawPlans: Omit<PricingPlan, 'onClick'>[] = [
@@ -47,7 +53,14 @@ const defaultRawPlans: Omit<PricingPlan, 'onClick'>[] = [
     },
 ];
 
-export function SubscriptionDialog({ open, onOpenChange, plans }: SubscriptionDialogProps) {
+export function SubscriptionDialog({
+    open,
+    onOpenChange,
+    plans,
+    title = "Выберите ваш тариф",
+    description = "Раскройте весь потенциал платформы.",
+    hideToggle = false
+}: SubscriptionDialogProps) {
 
     const finalPlans: PricingPlan[] = (plans || defaultRawPlans as PricingPlan[]).map(plan => {
         // If plan already has onClick, keep it. Otherwise assign default based on type.
@@ -79,9 +92,10 @@ export function SubscriptionDialog({ open, onOpenChange, plans }: SubscriptionDi
                 <div className="relative w-full rounded-xl bg-card shadow-2xl ring-1 ring-border overflow-hidden">
                     <div className="p-2 md:p-4">
                         <Pricing
-                            title="Выберите ваш тариф"
-                            description="Раскройте весь потенциал платформы."
+                            title={title}
+                            description={description}
                             plans={finalPlans}
+                            hideToggle={hideToggle}
                         // We omit onClose to rely on the Dialog's own close button
                         />
                     </div>

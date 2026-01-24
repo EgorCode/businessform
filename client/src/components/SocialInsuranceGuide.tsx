@@ -4,7 +4,7 @@ import { Heart, TrendingUp, CheckCircle2, AlertTriangle, ShieldCheck } from "luc
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Pricing } from "@/components/blocks/pricing";
+import { SubscriptionDialog, PricingPlan } from "@/components/shared/SubscriptionDialog";
 
 export default function SocialInsuranceGuide() {
   const [isPricingOpen, setIsPricingOpen] = useState(false);
@@ -71,68 +71,60 @@ export default function SocialInsuranceGuide() {
                   </ul>
                 </div>
 
-                <Dialog open={isPricingOpen} onOpenChange={setIsPricingOpen}>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" className="w-full gap-2 hover-elevate active-elevate-2 shadow-xs active:shadow-none border-blue-200 bg-blue-50/50 text-blue-700 hover:bg-blue-100 hover:text-blue-800 dark:border-blue-900/30 dark:bg-blue-900/20 dark:text-blue-300">
-                      <ShieldCheck className="h-4 w-4" />
-                      Новые больничные 2026
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="max-h-[95vh] max-w-4xl overflow-y-auto w-full p-0 bg-transparent border-none shadow-none sm:max-w-[900px]">
-                    <div className="relative w-full rounded-xl bg-card shadow-2xl ring-1 ring-border overflow-hidden">
-                      <div className="p-2 md:p-4">
-                        <Pricing
-                          title="Страхование на случай болезни (2026)"
-                          description={`С 2026 года самозанятые могут добровольно страховаться в СФР.\nПраво на выплаты появляется через 6 месяцев непрерывной уплаты взносов.\nОформить можно в приложении «Мой налог» (эксперимент до 2028 года).`}
-                          hideToggle={true}
-                          plans={[
-                            {
-                              name: "БАЗОВЫЙ",
-                              price: "1344",
-                              yearlyPrice: "16128",
-                              period: "в месяц",
-                              features: [
-                                "Страховая сумма: 35 000 ₽",
-                                "Стаж 6-12 мес: 70% выплаты",
-                                "Стаж 12+ мес: 100% выплаты",
-                                "Период ожидания: 6 месяцев",
-                                "Не включает декретные выплаты"
-                              ],
-                              description: "Взнос ~1344 ₽/мес",
-                              buttonText: "Выбрать базовый",
-                              isPopular: false,
-                              type: 'base',
-                              onClick: (plan) => {
-                                if (plan.type) handleTariffSelect(plan.type);
-                              }
-                            },
-                            {
-                              name: "МАКСИМУМ",
-                              price: "1920",
-                              yearlyPrice: "23040",
-                              period: "в месяц",
-                              features: [
-                                "Страховая сумма: 50 000 ₽",
-                                "Стаж 6-12 мес: 70% выплаты",
-                                "Стаж 12+ мес: 100% выплаты",
-                                "Период ожидания: 6 месяцев",
-                                "Не включает декретные выплаты"
-                              ],
-                              description: "Взнос ~1920 ₽/мес",
-                              buttonText: "Выбрать максимум",
-                              isPopular: true,
-                              type: 'max',
-                              onClick: (plan) => {
-                                if (plan.type) handleTariffSelect(plan.type);
-                              }
-                            }
-                          ]}
-                          onClose={() => setIsPricingOpen(false)}
-                        />
-                      </div>
-                    </div>
-                  </DialogContent>
-                </Dialog>
+                <Button onClick={() => setIsPricingOpen(true)} variant="outline" className="w-full gap-2 hover-elevate active-elevate-2 shadow-xs active:shadow-none border-blue-200 bg-blue-50/50 text-blue-700 hover:bg-blue-100 hover:text-blue-800 dark:border-blue-900/30 dark:bg-blue-900/20 dark:text-blue-300">
+                  <ShieldCheck className="h-4 w-4" />
+                  Новые больничные 2026
+                </Button>
+
+                <SubscriptionDialog
+                  open={isPricingOpen}
+                  onOpenChange={setIsPricingOpen}
+                  plans={[
+                    {
+                      name: "БАЗОВЫЙ",
+                      price: "1344",
+                      yearlyPrice: "16128",
+                      period: "в месяц",
+                      features: [
+                        "Страховая сумма: 35 000 ₽",
+                        "Стаж 6-12 мес: 70% выплаты",
+                        "Стаж 12+ мес: 100% выплаты",
+                        "Период ожидания: 6 месяцев",
+                        "Не включает декретные выплаты"
+                      ],
+                      description: "Взнос ~1344 ₽/мес",
+                      buttonText: "Выбрать базовый",
+                      isPopular: false,
+                      type: 'base',
+                      onClick: (plan) => {
+                        if (plan.type) handleTariffSelect(plan.type);
+                      }
+                    },
+                    {
+                      name: "МАКСИМУМ",
+                      price: "1920",
+                      yearlyPrice: "23040",
+                      period: "в месяц",
+                      features: [
+                        "Страховая сумма: 50 000 ₽",
+                        "Стаж 6-12 мес: 70% выплаты",
+                        "Стаж 12+ мес: 100% выплаты",
+                        "Период ожидания: 6 месяцев",
+                        "Не включает декретные выплаты"
+                      ],
+                      description: "Взнос ~1920 ₽/мес",
+                      buttonText: "Выбрать максимум",
+                      isPopular: true,
+                      type: 'max',
+                      onClick: (plan) => {
+                        if (plan.type) handleTariffSelect(plan.type);
+                      }
+                    }
+                  ] as PricingPlan[]}
+                  title="Страхование на случай болезни (2026)"
+                  description={`С 2026 года самозанятые могут добровольно страховаться в СФР.\nПраво на выплаты появляется через 6 месяцев непрерывной уплаты взносов.\nОформить можно в приложении «Мой налог» (эксперимент до 2028 года).`}
+                  hideToggle={true}
+                />
 
                 <Dialog open={isInfoOpen} onOpenChange={setIsInfoOpen}>
                   <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
