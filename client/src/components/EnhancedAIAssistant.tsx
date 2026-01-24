@@ -421,14 +421,16 @@ export default function EnhancedAIAssistant({ isMinimized = false, onToggle }: E
                     </div>
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-h-[95vh] max-w-4xl overflow-y-auto w-full p-0 bg-transparent border-none shadow-none sm:max-w-[900px]">
+                <DialogContent
+                  className="max-h-[90vh] max-w-4xl w-full p-0 bg-transparent border-none shadow-none sm:max-w-[900px]"
+                  style={{ overflowY: 'auto' }}
+                >
                   <div className="relative w-full rounded-xl bg-card shadow-2xl ring-1 ring-border overflow-hidden">
                     <div className="p-2 md:p-4">
                       <Pricing
                         title="Выберите ваш тариф"
                         description="Раскройте весь потенциал платформы."
                         plans={pricingPlans}
-                        onClose={() => setIsPricingOpen(false)}
                       />
                     </div>
                   </div>

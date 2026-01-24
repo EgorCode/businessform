@@ -50,7 +50,7 @@ export function Pricing({
     const isDesktop = useMediaQuery("(min-width: 768px)");
 
     return (
-        <div className="container px-4 py-4">
+        <div className="w-full px-4 py-4">
             <div className="text-center space-y-2 mb-4">
                 <h2 className="text-2xl font-bold tracking-tight sm:text-3xl text-foreground">
                     {title}
