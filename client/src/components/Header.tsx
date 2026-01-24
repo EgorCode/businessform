@@ -41,7 +41,7 @@ export default function Header() {
             </Link>
             <Link href="/case-studies">
               <span className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-green-600 hover:bg-green-50 rounded-full transition-all duration-300 cursor-pointer" data-testid="link-case-studies">
-                Истории
+                Кейсы
               </span>
             </Link>
             <Link href="/calculators">
@@ -110,121 +110,123 @@ export default function Header() {
           </div>
 
         </header>
-      </div>
+      </div >
 
       {/* Mobile Menu Dropdown (Hidden by default) */}
-      {mobileMenuOpen && (
-        <div className="fixed top-24 left-4 right-4 z-40 lg:hidden">
-          <div className="glass-panel rounded-2xl p-4 shadow-2xl flex flex-col gap-2 animate-fadeIn">
-            <Link href="/start">
-              <div
-                className="p-3 rounded-xl hover:bg-green-50 text-slate-700 hover:text-green-600 font-medium flex justify-between items-center cursor-pointer"
-                onClick={() => setMobileMenuOpen(false)}
-                data-testid="link-mobile-start"
+      {
+        mobileMenuOpen && (
+          <div className="fixed top-24 left-4 right-4 z-40 lg:hidden">
+            <div className="glass-panel rounded-2xl p-4 shadow-2xl flex flex-col gap-2 animate-fadeIn">
+              <Link href="/start">
+                <div
+                  className="p-3 rounded-xl hover:bg-green-50 text-slate-700 hover:text-green-600 font-medium flex justify-between items-center cursor-pointer"
+                  onClick={() => setMobileMenuOpen(false)}
+                  data-testid="link-mobile-start"
+                >
+                  Начать сейчас
+                  <svg className="w-4 h-4 text-slate-400 group-hover:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </Link>
+              <Link href="/case-studies">
+                <div
+                  className="p-3 rounded-xl hover:bg-green-50 text-slate-700 hover:text-green-600 font-medium flex justify-between items-center cursor-pointer"
+                  onClick={() => setMobileMenuOpen(false)}
+                  data-testid="link-mobile-case-studies"
+                >
+                  Кейсы
+                  <svg className="w-4 h-4 text-slate-400 group-hover:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </Link>
+              <Link href="/calculators">
+                <div
+                  className="p-3 rounded-xl hover:bg-white/60 font-medium text-slate-700 flex justify-between items-center cursor-pointer"
+                  onClick={() => setMobileMenuOpen(false)}
+                  data-testid="link-mobile-calculators"
+                >
+                  Калькуляторы
+                  <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </Link>
+              <Link href="/news">
+                <div
+                  className="p-3 rounded-xl hover:bg-white/60 font-medium text-slate-700 flex justify-between items-center cursor-pointer"
+                  onClick={() => setMobileMenuOpen(false)}
+                  data-testid="link-mobile-news"
+                >
+                  Новости
+                  <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </Link>
+              <Link href="/knowledge">
+                <div
+                  className="p-3 rounded-xl hover:bg-white/60 font-medium text-slate-700 flex justify-between items-center cursor-pointer"
+                  onClick={() => setMobileMenuOpen(false)}
+                  data-testid="link-mobile-knowledge"
+                >
+                  База знаний
+                  <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </Link>
+              <Link href="/documents">
+                <div
+                  className="p-3 rounded-xl hover:bg-white/60 font-medium text-slate-700 flex justify-between items-center cursor-pointer"
+                  onClick={() => setMobileMenuOpen(false)}
+                  data-testid="link-mobile-documents"
+                >
+                  Документы
+                  <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </Link>
+              <button
+                className="p-3 rounded-xl hover:bg-white/60 font-medium text-slate-700 flex justify-between items-center w-full text-left"
+                onClick={() => {
+                  toggleMinimized();
+                  setMobileMenuOpen(false);
+                }}
+                data-testid="button-mobile-ai-assistant"
               >
-                Начнём?
-                <svg className="w-4 h-4 text-slate-400 group-hover:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </div>
-            </Link>
-            <Link href="/case-studies">
-              <div
-                className="p-3 rounded-xl hover:bg-green-50 text-slate-700 hover:text-green-600 font-medium flex justify-between items-center cursor-pointer"
-                onClick={() => setMobileMenuOpen(false)}
-                data-testid="link-mobile-case-studies"
-              >
-                Кейсы самозанятых
-                <svg className="w-4 h-4 text-slate-400 group-hover:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </div>
-            </Link>
-            <Link href="/calculators">
-              <div
-                className="p-3 rounded-xl hover:bg-white/60 font-medium text-slate-700 flex justify-between items-center cursor-pointer"
-                onClick={() => setMobileMenuOpen(false)}
-                data-testid="link-mobile-calculators"
-              >
-                Калькуляторы
+                <div className="flex items-center gap-2">
+                  <Sparkles className="h-4 w-4" />
+                  ИИ-помощник
+                </div>
                 <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
-              </div>
-            </Link>
-            <Link href="/news">
-              <div
-                className="p-3 rounded-xl hover:bg-white/60 font-medium text-slate-700 flex justify-between items-center cursor-pointer"
-                onClick={() => setMobileMenuOpen(false)}
-                data-testid="link-mobile-news"
+              </button>
+              <button
+                className="p-3 rounded-xl hover:bg-white/60 font-medium text-slate-700 flex justify-between items-center w-full text-left"
+                onClick={() => {
+                  setSearchModalOpen(true);
+                  setMobileMenuOpen(false);
+                }}
+                data-testid="button-mobile-search"
               >
-                Новости
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  Поиск по сайту
+                </div>
                 <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
-              </div>
-            </Link>
-            <Link href="/knowledge">
-              <div
-                className="p-3 rounded-xl hover:bg-white/60 font-medium text-slate-700 flex justify-between items-center cursor-pointer"
-                onClick={() => setMobileMenuOpen(false)}
-                data-testid="link-mobile-knowledge"
-              >
-                База знаний
-                <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </div>
-            </Link>
-            <Link href="/documents">
-              <div
-                className="p-3 rounded-xl hover:bg-white/60 font-medium text-slate-700 flex justify-between items-center cursor-pointer"
-                onClick={() => setMobileMenuOpen(false)}
-                data-testid="link-mobile-documents"
-              >
-                Документы
-                <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </div>
-            </Link>
-            <button
-              className="p-3 rounded-xl hover:bg-white/60 font-medium text-slate-700 flex justify-between items-center w-full text-left"
-              onClick={() => {
-                toggleMinimized();
-                setMobileMenuOpen(false);
-              }}
-              data-testid="button-mobile-ai-assistant"
-            >
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4" />
-                ИИ-помощник
-              </div>
-              <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-            <button
-              className="p-3 rounded-xl hover:bg-white/60 font-medium text-slate-700 flex justify-between items-center w-full text-left"
-              onClick={() => {
-                setSearchModalOpen(true);
-                setMobileMenuOpen(false);
-              }}
-              data-testid="button-mobile-search"
-            >
-              <div className="flex items-center gap-2">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                Поиск по сайту
-              </div>
-              <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )
+      }
 
       {/* Модальное окно поиска */}
       <SearchModal

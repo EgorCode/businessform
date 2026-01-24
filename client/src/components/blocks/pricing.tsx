@@ -56,33 +56,32 @@ export function Pricing({
                     {title}
                 </h2>
                 <p className="text-muted-foreground text-sm whitespace-pre-line">
-                    {description}
                 </p>
                 {onClose && (
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute right-4 top-4 rounded-full md:hidden"
+                        className="absolute right-2 top-2 rounded-full md:hidden hover:bg-slate-100 dark:hover:bg-slate-800"
                         onClick={onClose}
                     >
-                        <X className="h-4 w-4" />
+                        <X className="h-5 w-5" />
                     </Button>
                 )}
             </div>
 
             {!hideToggle && (
                 <div className="flex justify-center mb-6">
-                    <label className="relative inline-flex items-center cursor-pointer">
-                        <Label className="mr-3 text-sm font-semibold">
+                    <label className="relative inline-flex items-center cursor-pointer select-none">
+                        <Label className="mr-3 text-xs sm:text-sm font-semibold cursor-pointer">
                             Ежемесячно
                         </Label>
                         <Switch
                             checked={!isMonthly}
                             onCheckedChange={(checked) => setIsMonthly(!checked)}
-                            className="relative"
+                            className="relative scale-90 sm:scale-100"
                         />
-                        <span className="ml-2 text-sm font-semibold text-foreground">
-                            Ежегодно <span className="text-primary font-bold">(Выгодно)</span>
+                        <span className="ml-2 text-xs sm:text-sm font-semibold text-foreground">
+                            Ежегодно <span className="text-primary font-bold block sm:inline text-[10px] sm:text-xs md:text-sm">(Выгодно)</span>
                         </span>
                     </label>
                 </div>
