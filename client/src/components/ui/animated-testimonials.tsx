@@ -130,6 +130,23 @@ export const AnimatedTestimonials = ({
                             ))}
                         </AnimatePresence>
                     </div>
+                    {/* Mobile Navigation Buttons */}
+                    <div className="flex gap-4 pt-6 md:hidden justify-center">
+                        <button
+                            onClick={handlePrev}
+                            aria-label="Предыдущий отзыв"
+                            className="h-10 w-10 rounded-full bg-gray-100 dark:bg-neutral-800 flex items-center justify-center group/button hover:bg-gray-200 dark:hover:bg-neutral-700 transition-colors"
+                        >
+                            <ArrowLeftIcon className="h-5 w-5 text-black dark:text-white group-hover/button:rotate-12 transition-transform duration-300" />
+                        </button>
+                        <button
+                            onClick={handleNext}
+                            aria-label="Следующий отзыв"
+                            className="h-10 w-10 rounded-full bg-gray-100 dark:bg-neutral-800 flex items-center justify-center group/button hover:bg-gray-200 dark:hover:bg-neutral-700 transition-colors"
+                        >
+                            <ArrowRightIcon className="h-5 w-5 text-black dark:text-white group-hover/button:-rotate-12 transition-transform duration-300" />
+                        </button>
+                    </div>
                 </div>
                 <div className="flex justify-between flex-col py-4">
                     <motion.div
@@ -163,7 +180,7 @@ export const AnimatedTestimonials = ({
                             ))}
                         </motion.p>
                     </motion.div>
-                    <div className="flex gap-4 pt-12 md:pt-0">
+                    <div className="hidden md:flex gap-4 pt-12 md:pt-0">
                         <button
                             onClick={handlePrev}
                             aria-label="Предыдущий отзыв"
