@@ -186,7 +186,7 @@ export default function StartPage() {
       <PageSection size="lg">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 min-w-max sm:min-w-0">
+            <TabsList className="grid w-full grid-cols-2 h-auto sm:h-10 sm:grid-cols-4 min-w-max sm:min-w-0">
               <TabsTrigger value="overview" className="whitespace-nowrap text-xs sm:text-sm">Обзор</TabsTrigger>
               <TabsTrigger value="quickstart" className="whitespace-nowrap text-xs sm:text-sm">Быстрый старт</TabsTrigger>
               <TabsTrigger value="ideas" className="whitespace-nowrap text-xs sm:text-sm">Бизнес-идеи</TabsTrigger>

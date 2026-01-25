@@ -166,7 +166,7 @@ const LiveVisitorCounter = () => {
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                     </div>
-                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Сейчас на сайте</span>
+                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Уже с нами</span>
                 </div>
 
                 <div className="flex items-baseline gap-0.5">

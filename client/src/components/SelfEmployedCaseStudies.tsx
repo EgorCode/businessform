@@ -6,7 +6,7 @@ import {
   Palette, Home, Hammer, BookOpen,
   TrendingUp, Users, AlertTriangle, CheckCircle2,
   Sparkles, Calendar, PiggyBank, Bell,
-  ArrowRight, Building2, Receipt, User
+  ArrowRight, Building2, Receipt, User, Truck
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAIAssistant } from "@/contexts/AIAssistantContext";
@@ -45,6 +45,26 @@ interface CaseStudy {
 
 // Fallback data
 const staticCaseStudies: CaseStudy[] = [
+  {
+    id: "vladimir-courier",
+    name: "Владимир",
+    avatar: "ВЛ",
+    avatarGradient: "from-indigo-500 to-blue-500",
+    role: "Курьер",
+    niche: "Доставка и логистика",
+    icon: Truck,
+    problem: "Владимир работает курьером и хочет работать легально, но боится сложной бухгалтерии. Ему важно разобраться с добровольными взносами в СФР (больничные) и получить бонусы при регистрации.",
+    journey: [
+      "Владимир находит на сайте статью про добровольные взносы в СФР (нововведение 2026 года).",
+      "Он переходит по партнерской ссылке Альфа-Банка прямо с портала для регистрации самозанятости, чтобы получить бонусы.",
+      "Вступает в Telegram-чат сообщества и получает бесплатную консультацию по настройке приложения."
+    ],
+    result: "Владимир зарегистрировался за 10 минут, получил бонусы от банка и оформил добровольное страхование для больничных. Теперь он работает полностью легально.",
+    subscription: "lite",
+    features: ["Партнерская регистрация (Альфа-Банк)", "Гайд по взносам в СФР", "Доступ к TG-сообществу"],
+    taxRate: "4% / 6%",
+    clientType: "Агрегаторы и физлица"
+  },
   {
     id: "anna-designer",
     name: "Анна",
@@ -133,6 +153,7 @@ const iconMap: Record<string, any> = {
   "Ремесло": Hammer,
   "Контент": BookOpen,
   "IT": Sparkles,
+  "Доставка": Truck,
   "Default": Users
 };
 

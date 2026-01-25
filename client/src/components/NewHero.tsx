@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Sparkles, Palette, Home, Hammer, BookOpen } from "lucide-react";
+import { ArrowRight, Sparkles, Palette, Home, Hammer, Truck } from "lucide-react";
 import { useLocation } from "wouter";
 import { useAIAssistant } from "@/contexts/AIAssistantContext";
 import LiveVisitorCounter from "@/components/ui/live-visitor";
@@ -32,12 +32,12 @@ const selfEmployedCategories = [
     borderColor: "border-amber-500/20"
   },
   {
-    label: "Блогер",
-    description: "Контент, курсы, гайды",
-    taxRate: "4%",
-    icon: BookOpen,
-    gradient: "from-rose-500 to-red-500",
-    borderColor: "border-rose-500/20"
+    label: "Курьер",
+    description: "Доставка, логистика, авто",
+    taxRate: "4-6%",
+    icon: Truck,
+    gradient: "from-indigo-500 to-blue-500",
+    borderColor: "border-indigo-500/20"
   },
 ];
 

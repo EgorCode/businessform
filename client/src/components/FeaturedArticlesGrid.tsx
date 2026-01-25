@@ -326,16 +326,10 @@ export default function FeaturedArticlesGrid() {
             return [...staticArticleItems, ...uniqueStrapiItems];
         }
 
-        return isLoading ? [] : staticArticleItems;
+        return staticArticleItems;
     }, [strapiResponse, error, isLoading]);
 
-    if (isLoading && !strapiResponse) {
-        return (
-            <div className="py-12 flex justify-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            </div>
-        );
-    }
+    // Removed blocking loading state to show static content immediately
 
     return (
         <div className="space-y-6">

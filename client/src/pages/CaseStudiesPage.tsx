@@ -11,7 +11,7 @@ export default function CaseStudiesPage() {
             <PageHeader
                 title="Кейсы и истории успеха"
                 description="Реальные примеры того, как предприниматели и самозанятые оптимизируют налоги и развивают свой бизнес с помощью нашей платформы."
-                breadcrumbs={[{ label: "Кейсы" }]}
+                breadcrumbs={[{ label: "Истории" }]}
             />
 
             <PageSection size="lg" className="pt-0">

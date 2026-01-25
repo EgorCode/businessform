@@ -211,7 +211,8 @@ export default function PracticalFAQ() {
       }
     }
 
-    return isLoading ? [] : staticScenarios;
+    // Always return staticScenarios if no dynamic data available yet
+    return staticScenarios;
   }, [strapiResponse, error, isLoading]);
 
   const categories = [
@@ -230,13 +231,7 @@ export default function PracticalFAQ() {
     ? scenarios
     : scenarios.filter((s: FAQScenario) => s.category === selectedCategory);
 
-  if (isLoading && !strapiResponse) {
-    return (
-      <section className="bg-background py-20 flex justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </section>
-    );
-  }
+  // Removed blocking loading state to show static content immediately
 
   return (
     <section className="bg-transparent py-20">
