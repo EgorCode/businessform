@@ -66,7 +66,7 @@ export default function NewHero() {
               </h1>
 
               <p className="text-xl text-muted-foreground leading-relaxed lg:text-2xl" data-testid="text-new-hero-subtitle">
-                Налог от 4%. Без отчётности. Без страховых взносов.
+                Налог от 4%.
                 Узнайте, подходит ли вам этот статус.
               </p>
             </div>
@@ -80,7 +80,7 @@ export default function NewHero() {
                 data-testid="button-start-journey"
                 onClick={() => setLocation("/wizard")}
               >
-                Неуверен? Пройди опрос
+                Не уверен? Пройди опрос
                 <ArrowRight className="h-5 w-5" />
               </Button>
 
