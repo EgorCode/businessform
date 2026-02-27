@@ -6,8 +6,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Sparkles, Send, Upload, X, Loader2, FileText, Calculator, Users, TrendingUp, HelpCircle, ClipboardCheck } from "lucide-react";
 import { useState, useCallback, useEffect, useRef } from "react";
-import { aiService, AIMessage } from "@/services/aiService";
 import { useAIAssistant } from "@/contexts/AIAssistantContext";
+import { useAIChat } from "@/hooks/useAIChat";
 import { useScrollDetection } from '@/hooks/useScrollDetection';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
@@ -51,9 +51,8 @@ interface EnhancedAIAssistantProps {
 }
 
 export default function EnhancedAIAssistant({ isMinimized = false, onToggle }: EnhancedAIAssistantProps) {
-  const { messages, setMessages, toggleMinimized, addMessage, subscriptionTier } = useAIAssistant();
-  const [input, setInput] = useState("");
-  const [isThinking, setIsThinking] = useState(false);
+  const { messages, toggleMinimized } = useAIAssistant();
+  const { input, setInput, isThinking, handleSend, handleQuickQuestion } = useAIChat();
   const [activeTab, setActiveTab] = useState("chat");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { isScrolling, elementRef, scrollToBottom } = useScrollDetection();
@@ -86,61 +85,7 @@ export default function EnhancedAIAssistant({ isMinimized = false, onToggle }: E
     return () => clearTimeout(timeoutId);
   }, [messages, scrollToBottom, scrollToBottomWithRef]);
 
-  const handleSend = useCallback(() => {
-    if (!input.trim()) return;
-
-    const userMessage: AIMessage = {
-      id: Date.now().toString(),
-      role: "user",
-      content: input,
-      timestamp: new Date(),
-    };
-
-    addMessage(userMessage);
-    setInput("");
-    setIsThinking(true);
-
-    // Используем реальный AI сервис для получения ответа с учетом подписки
-    aiService.sendMessage(input, messages, subscriptionTier).then(response => {
-      const aiMessage: AIMessage = {
-        id: (Date.now() + 1).toString(),
-        role: "assistant",
-        content: response.message,
-        timestamp: new Date(),
-        category: response.category
-      };
-      addMessage(aiMessage);
-      setIsThinking(false);
-    }).catch(error => {
-      console.error('AI Service Error:', error);
-      // В случае ошибки показываем стандартное сообщение об ошибке
-      const aiMessage: AIMessage = {
-        id: (Date.now() + 1).toString(),
-        role: "assistant",
-        content: "Извините, произошла ошибка при обработке вашего запроса. Пожалуйста, попробуйте еще раз или переформулируйте вопрос.",
-        timestamp: new Date(),
-        category: "general"
-      };
-      addMessage(aiMessage);
-      setIsThinking(false);
-    });
-  }, [input, messages, addMessage, subscriptionTier]);
-
-
-  const handleQuickQuestion = useCallback((question: string) => {
-    setInput(question);
-    setTimeout(() => handleSend(), 100);
-  }, [handleSend]);
-
-  const handleFileUpload = useCallback(() => {
-    const aiMessage: AIMessage = {
-      id: Date.now().toString(),
-      role: "assistant",
-      content: "📎 **Анализ документов готов!**\n\nВы можете загрузить:\n• Договоры с клиентами для анализа рисков\n• Банковские выписки для расчёта доходов\n• Чеки и накладные для оптимизации налогов\n\nЭто поможет мне дать персонализированные рекомендации по вашей ситуации.",
-      timestamp: new Date(),
-    };
-    addMessage(aiMessage);
-  }, [addMessage]);
+  // Удалены handleSend, handleQuickQuestion, handleFileUpload, так как они перенесены / не нужны
 
   // Компонент больше не рендерит минимизированную кнопку
   // Это теперь обрабатывается FloatingAIButton

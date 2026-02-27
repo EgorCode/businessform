@@ -1,56 +1,36 @@
-import { useState, useEffect } from "react";
+import { useState, lazy, Suspense } from "react";
 import Header from "@/components/Header";
 import NewHero from "@/components/NewHero";
 import ArchetypeSelector from "@/components/ArchetypeSelector";
 import IdeaGenerator from "@/components/IdeaGenerator";
-import { TestimonialsSplit } from "@/components/ui/split-testimonial";
-import WorkExperienceTracker from "@/components/WorkExperienceTracker";
-import SelfEmploymentRegistration from "@/components/SelfEmploymentRegistration";
-import SocialInsuranceGuide from "@/components/SocialInsuranceGuide";
-
-
-import NewsFeed from "@/components/NewsFeed";
-import FeaturedArticles from "@/components/FeaturedArticles";
 import Footer from "@/components/Footer";
 import EnhancedAIAssistant from "@/components/EnhancedAIAssistant";
+import { useHashScroll } from "@/hooks/useHashScroll";
+import { Skeleton } from "@/components/ui/skeleton";
+
+// Ленивая загрузка для компонентов "ниже сгиба" страницы
+const NewsFeed = lazy(() => import("@/components/NewsFeed"));
+const TestimonialsSplit = lazy(() => import("@/components/ui/split-testimonial").then(m => ({ default: m.TestimonialsSplit })));
+const WorkExperienceTracker = lazy(() => import("@/components/WorkExperienceTracker"));
+const SelfEmploymentRegistration = lazy(() => import("@/components/SelfEmploymentRegistration"));
+const SocialInsuranceGuide = lazy(() => import("@/components/SocialInsuranceGuide"));
+const FeaturedArticles = lazy(() => import("@/components/FeaturedArticles"));
+
+const SectionSkeleton = () => (
+  <div className="py-20 max-w-7xl mx-auto px-4 w-full">
+    <div className="space-y-4">
+      <Skeleton className="h-10 w-1/3 mb-10" />
+      <Skeleton className="h-64 w-full rounded-xl" />
+    </div>
+  </div>
+);
 
 export default function NewHome() {
   const [showArchetypeSelector, setShowArchetypeSelector] = useState(false);
   const [selectedArchetype, setSelectedArchetype] = useState<string | null>(null);
   const [isChatMinimized, setIsChatMinimized] = useState(true);
 
-  useEffect(() => {
-    const handleHashScroll = () => {
-      const hash = window.location.hash;
-      if (hash) {
-        const id = hash.replace('#', '');
-
-        // Функция попытки скролла
-        const attemptScroll = (attempts = 0) => {
-          const element = document.getElementById(id);
-          if (element) {
-            // Небольшая задержка, чтобы убедиться, что элементы выше (новости и т.д.) заняли свое место
-            setTimeout(() => {
-              element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
-          } else if (attempts < 10) {
-            // Если элемента еще нет, пробуем снова через 100мс
-            setTimeout(() => attemptScroll(attempts + 1), 100);
-          }
-        };
-
-        attemptScroll();
-      }
-    };
-
-    // Запускаем при монтировании
-    setTimeout(handleHashScroll, 300);
-    setTimeout(handleHashScroll, 1500); // Резервная попытка после полной загрузки страницы
-
-    // Слушаем изменения хэша
-    window.addEventListener('hashchange', handleHashScroll);
-    return () => window.removeEventListener('hashchange', handleHashScroll);
-  }, []);
+  useHashScroll();
 
   const handleArchetypeSelect = (archetypeId: string) => {
     setSelectedArchetype(archetypeId);
@@ -75,16 +55,20 @@ export default function NewHome() {
       <Header />
       <main>
         <NewHero />
-        <NewsFeed />
+        <Suspense fallback={<SectionSkeleton />}>
+          <NewsFeed />
+        </Suspense>
         <IdeaGenerator />
-        <section id="testimonials">
-          <TestimonialsSplit />
-        </section>
+        <Suspense fallback={<SectionSkeleton />}>
+          <section id="testimonials">
+            <TestimonialsSplit />
+          </section>
 
-        <SelfEmploymentRegistration />
-        <WorkExperienceTracker />
-        <FeaturedArticles />
-        <SocialInsuranceGuide />
+          <SelfEmploymentRegistration />
+          <WorkExperienceTracker />
+          <FeaturedArticles />
+          <SocialInsuranceGuide />
+        </Suspense>
 
 
       </main>

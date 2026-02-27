@@ -196,7 +196,7 @@ export function TestimonialsSplit() {
             {/* View All Button */}
             <div className="mt-20 text-center">
                 <Button asChild variant="outline" size="lg">
-                    <Link href="/case-studies">Смотреть все кейсы</Link>
+                    <Link href="/case-studies">Смотреть все истории</Link>
                 </Button>
             </div>
         </div>

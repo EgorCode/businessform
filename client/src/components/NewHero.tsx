@@ -99,8 +99,16 @@ export default function NewHero() {
                 return (
                   <div
                     key={idx}
-                    className={`rounded-2xl border-2 ${category.borderColor} bg-card/50 backdrop-blur-sm p-5 hover-elevate cursor-pointer transition-all hover:scale-105`}
+                    role="button"
+                    tabIndex={0}
+                    className={`rounded-2xl border-2 ${category.borderColor} bg-card/50 backdrop-blur-sm p-5 hover-elevate cursor-pointer transition-all hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2`}
                     onClick={() => setLocation("/case-studies")}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setLocation("/case-studies");
+                      }
+                    }}
                   >
                     <div className="flex items-center gap-3 mb-3">
                       <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${category.gradient}`}>
