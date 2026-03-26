@@ -64,7 +64,7 @@ export default function SocialInsuranceGuide() {
                     Можно платить добровольно:
                   </p>
                   <ul className="space-y-1 text-sm">
-                    <li>• СФР (пенсия): 45 842 ₽/год</li>
+                    <li>• СФР (пенсия): 71 525,52 ₽/год</li>
                     <li>• ФСС (больничные): 5 652 ₽/год</li>
                     <li className="pt-2 text-xs text-muted-foreground">
                       Итого: ~4 291 ₽/месяц за полный пакет
@@ -189,7 +189,7 @@ export default function SocialInsuranceGuide() {
 
                 <div className="rounded-md border bg-green-500/10 p-4">
                   <p className="mb-2 text-sm font-medium text-green-900 dark:text-green-100">
-                    Обязательные взносы 2024:
+                    Обязательные взносы 2026:
                   </p>
                   <ul className="space-y-1 text-sm">
                     <li className="flex justify-between">
@@ -202,7 +202,7 @@ export default function SocialInsuranceGuide() {
                     </li>
                     <li className="flex justify-between border-t pt-1">
                       <span className="font-medium">Итого:</span>
-                      <span className="font-mono font-semibold">45 842 ₽/год</span>
+                      <span className="font-mono font-semibold">71 525,52 ₽/год</span>
                     </li>
                     <li className="pt-2 text-xs text-muted-foreground">
                       + 1% от дохода свыше 300 000 ₽/год
@@ -254,7 +254,7 @@ export default function SocialInsuranceGuide() {
                     <p className="font-medium">Платите добровольно в СФР</p>
                     <p className="text-muted-foreground">
                       Если уверены в доходах — начните копить стаж.
-                      45 842 ₽/год = 1 год стажа. Можно платить частями.
+                      71 525,52 ₽/год = 1 год стажа. Можно платить частями.
                     </p>
                   </div>
                 </div>

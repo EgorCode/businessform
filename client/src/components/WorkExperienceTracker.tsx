@@ -207,7 +207,7 @@ export default function WorkExperienceTracker() {
                       <div>
                         <p className="font-medium">Можно платить добровольно</p>
                         <p className="text-sm text-muted-foreground">
-                          45 842 ₽ за 2024 год = 1 год стажа
+                          71 525,52 ₽ за 2026 год = 1 год стажа
                         </p>
                       </div>
                     </div>
@@ -345,7 +345,7 @@ export default function WorkExperienceTracker() {
 
                     <div className="rounded-md border bg-green-500/10 p-4">
                       <p className="mb-2 text-sm font-medium text-green-900 dark:text-green-100">
-                        Фиксированные взносы в 2024:
+                        Фиксированные взносы в 2026:
                       </p>
                       <ul className="space-y-1 text-sm">
                         <li className="flex justify-between">
@@ -358,7 +358,7 @@ export default function WorkExperienceTracker() {
                         </li>
                         <li className="flex justify-between border-t pt-1">
                           <span className="font-medium">Итого:</span>
-                          <span className="font-mono font-semibold">45 842 ₽/год</span>
+                          <span className="font-mono font-semibold">71 525,52 ₽/год</span>
                         </li>
                       </ul>
                       <p className="mt-2 text-xs text-muted-foreground">
@@ -436,7 +436,7 @@ export default function WorkExperienceTracker() {
               <p className="text-sm font-medium">💡 Совет для студентов:</p>
               <p className="mt-1 text-sm text-muted-foreground">
                 Если планируете работать на себя долго — начните платить добровольные взносы уже с НПД.
-                Каждый год стажа приближает к пенсии и увеличивает её размер. В 2024 году минимум 45 842 ₽
+                Каждый год стажа приближает к пенсии и увеличивает её размер. В 2026 году минимум 71 525,52 ₽
                 даёт полный год стажа.
               </p>
             </div>
