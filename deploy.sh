@@ -219,7 +219,7 @@ SESSION_SECRET=$SESSION_SECRET
 
 # Google Gemini API Configuration
 GEMINI_API_KEY=$GEMINI_API_KEY
-GEMINI_MODEL=gemini-2.5-flash-preview-09-2025
+GEMINI_MODEL=gemini-2.5-flash
 GEMINI_API_URL=https://generativelanguage.googleapis.com/v1beta
 
 # AI Service Configuration

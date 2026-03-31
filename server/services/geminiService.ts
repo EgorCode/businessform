@@ -31,7 +31,7 @@ class GeminiService {
   constructor() {
     this.apiKey = process.env.GEMINI_API_KEY || '';
     this.apiUrl = process.env.GEMINI_API_URL || 'https://generativelanguage.googleapis.com/v1beta';
-    this.model = process.env.GEMINI_MODEL || 'gemini-2.5-flash-preview-09-2025';
+    this.model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
     
     // Логирование для отладки
     console.log('GeminiService initialized with:', {
